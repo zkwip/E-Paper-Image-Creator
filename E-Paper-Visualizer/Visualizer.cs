@@ -1,6 +1,8 @@
 ﻿using Cocona;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Dynamic;
 using System.IO;
 
 namespace Zkwip.EPIC.Visualizer;
@@ -18,7 +20,7 @@ public class Visualizer
 
             var content = File.ReadAllText(file);
 
-            Bitmap bitmap = BuildImage(content, 300, 400, Profiles.RedBlack);
+            Bitmap bitmap = BuildImage(content, 400, 300, Profiles.RedBlack, Color.White);
 
             bitmap.Save(output);
 
@@ -31,7 +33,37 @@ public class Visualizer
         }
     }
 
-    private static Bitmap BuildImage(string content, int v1, int v2, Channel[] redBlack)
+    private static Bitmap BuildImage(string content, int width, int height, Channel[] channels, Color background)
+    {
+        Bitmap bitmap = new Bitmap(width, height);
+        int channelCount = channels.Length;
+
+        int counter = 0;
+
+        List<Byte>[] bytes = ExtractBytes(content, channels);  
+
+        foreach (Point p in ImageCreator.Pixels(bitmap.Size))
+        {
+            bitmap.SetPixel(p.X, p.Y, GetColor(counter, bytes, channels, background));
+            counter++;
+        }
+
+        return bitmap;
+    }
+
+    private static Color GetColor(int counter, List<byte>[] bytes, Channel[] channels, Color background)
+    {
+        for (int c = 0; c < channels.Length; c++)
+        {
+            byte b = bytes[c][counter/8];
+            if ((b & 1<<(counter%8)) == 1)
+                return channels[c].Color;
+        }
+
+        return background;
+    }
+
+    private static List<byte>[] ExtractBytes(string content, Channel[] channels)
     {
         throw new NotImplementedException();
     }

@@ -53,7 +53,7 @@ public class ImageCreator
         
         var counter = 0;
 
-        foreach(Color pixel in Pixels(img))
+        foreach(Color pixel in PixelColors(img))
         {
             var bits = Map(pixel, channels);
 
@@ -128,13 +128,19 @@ public class ImageCreator
         return map;
     }
 
-    public static IEnumerable<Color> Pixels(Bitmap img)
+    public static IEnumerable<Color> PixelColors(Bitmap img)
     {
-        for (int y = 0; y < img.Height; y++)
+        foreach (Point p in Pixels(img.Size)) 
+            yield return img.GetPixel(p.X, p.Y);
+    }
+
+    public static IEnumerable<Point> Pixels(Size size)
+    {
+        for (int y = 0; y < size.Height; y++)
         {
-            for (int x = 0; x < img.Width; x++)
+            for (int x = 0; x < size.Width; x++)
             {
-                yield return img.GetPixel(x, y);
+                yield return new Point(x, y);
             }
         }
     }

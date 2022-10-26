@@ -1,9 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <RootNamespace>Zkwip.EPIC</RootNamespace>
+    <RootNamespace>Zkwip.EPIC.Visualizer</RootNamespace>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -14,9 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="eau.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\E-Paper-Image-Creator\E-Paper-Image-Creator.csproj" />
   </ItemGroup>
-
+  
 </Project>

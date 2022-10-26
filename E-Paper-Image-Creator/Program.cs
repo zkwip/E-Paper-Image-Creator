@@ -15,7 +15,7 @@ internal class Program
         if (img.Size.IsEmpty)
             return StopWithText("The provided file is not an image file");
 
-        if (format is null) format = "krw";
+        format ??= "krw";
 
         string result = BuildImageCode(img, format);
 
@@ -37,11 +37,3 @@ internal class Program
         return val;
     }
 }
-
-internal struct Order
-{
-    internal bool LeftToRight;
-    internal bool BigEndian;
-    internal bool FlipVertical;
-    internal bool FlipHorizontal;
-};

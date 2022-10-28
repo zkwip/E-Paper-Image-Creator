@@ -2,7 +2,7 @@
   "profiles": {
     "E-Paper-Image-Creator": {
       "commandName": "Project",
-      "commandLineArgs": "--file eau.png --output out.cpp"
+      "commandLineArgs": "--file img.png --output img.cpp"
     }
   }
 }

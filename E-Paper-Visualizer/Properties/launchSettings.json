@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "E-Paper-Visualizer": {
+      "commandName": "Project",
+      "commandLineArgs": "--file img.cpp --output img.png"
+    }
+  }
+}

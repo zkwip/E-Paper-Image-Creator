@@ -17,11 +17,5 @@
   <ItemGroup>
     <ProjectReference Include="..\E-Paper-Image-Creator\E-Paper-Image-Creator.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Update="imagedata.cpp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
   
 </Project>

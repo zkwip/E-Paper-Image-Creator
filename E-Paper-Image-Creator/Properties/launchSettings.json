@@ -1,8 +1,12 @@
 {
   "profiles": {
-    "E-Paper-Image-Creator": {
+    "EPIC: Build image": {
       "commandName": "Project",
-      "commandLineArgs": "--file img.png --output img.cpp"
+      "commandLineArgs": "build --file img.png --output img.cpp"
+    },
+    "EPIC: Extract image": {
+      "commandName": "Project",
+      "commandLineArgs": "extract --file img.cpp --output img.png"
     }
   }
 }

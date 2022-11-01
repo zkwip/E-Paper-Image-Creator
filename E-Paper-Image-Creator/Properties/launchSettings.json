@@ -2,11 +2,11 @@
   "profiles": {
     "EPIC: Build image": {
       "commandName": "Project",
-      "commandLineArgs": "build --file img.png --output img.cpp"
+      "commandLineArgs": "build eau.png -o img.cpp"
     },
     "EPIC: Extract image": {
       "commandName": "Project",
-      "commandLineArgs": "extract --file img.cpp --output img.png"
+      "commandLineArgs": "extract img.cpp -o img.png"
     }
   }
 }

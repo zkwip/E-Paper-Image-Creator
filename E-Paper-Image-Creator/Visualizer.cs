@@ -7,7 +7,7 @@ namespace Zkwip.EPIC;
 
 public class Visualizer
 {
-    internal static int Visualize(string file, string output)
+    internal static int Visualize(string file, string output, bool force)
     {
         try
         {
@@ -16,6 +16,14 @@ public class Visualizer
 
             var content = File.ReadAllText(file);
             var bitmap = BuildImage(content, 400, 300, StandardProfiles.BlackWhiteRed);
+
+            
+
+            if (output is null)
+                output = file[..file.LastIndexOf('.')] + ".h";
+
+            if (File.Exists(output) && !force)
+                throw new Exception($"The output file \"{output}\" already exist");
 
             bitmap.Save(output);
 

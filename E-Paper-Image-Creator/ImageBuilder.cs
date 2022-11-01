@@ -3,10 +3,10 @@ using System.Drawing;
 using System.IO;
 
 namespace Zkwip.EPIC;
-public class EPaperImageCreator
+public class ImageBuilder
 {
 
-    internal static int Epic(string file, string? output)
+    internal static int Epic(string file, string? output, bool force)
     {
         try
         {
@@ -26,16 +26,19 @@ public class EPaperImageCreator
             string result = CodeFileGeneration.BuildImageCode(img, profile);
 
 
-            if (output is not null)
-                File.WriteAllText(output, result);
-            else
-                Console.Write(result);
+            if (output is null)
+                output = file[..file.LastIndexOf('.')] + ".h";
+
+            if (File.Exists(output) && !force)
+                throw new Exception($"The output file \"{output}\" already exist");
+
+            File.WriteAllText(output, result);
 
             return 0;
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            Console.WriteLine(ex.Message);
             return 1;
         }
     }

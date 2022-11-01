@@ -18,8 +18,7 @@ public class Visualizer
                 throw new Exception("The provided file does not exist");
 
             var content = File.ReadAllText(file);
-
-            Bitmap bitmap = BuildImage(content, 400, 300, Profiles.BlackWhiteRed);
+            var bitmap = BuildImage(content, 400, 300, Profiles.BlackWhiteRed);
 
             bitmap.Save(output);
 
@@ -27,7 +26,7 @@ public class Visualizer
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            Console.WriteLine(ex.Message);
             return 1;
         }
     }
@@ -35,8 +34,7 @@ public class Visualizer
     private static Bitmap BuildImage(string content, int width, int height, Profile profile)
     {
         var bitmap = new Bitmap(width, height);
-
-        int counter = 0;
+        var counter = 0;
 
         List<Byte>[] bytes = ExtractBytes(content, profile);  
 
@@ -179,7 +177,9 @@ public class Visualizer
 
     private static string Slice(string input, int firstCut, int secondCut)
     {
-        if (secondCut < 0 ) secondCut += input.Length;
+        if (secondCut < 0 ) 
+            secondCut += input.Length;
+
         return input[..firstCut] + input[secondCut..];
     }
 }

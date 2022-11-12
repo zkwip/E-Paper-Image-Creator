@@ -9,16 +9,16 @@
   "channels": [
     {
       "cname": "IMAGE_RED",
-      "color": "#FF0000",
+      "color": {"r": 0,"g": 0,"b": 255},
       "distance": 100,
       "storeinverted": 1
     },
     {
       "cname": "IMAGE_BLACK",
-      "color": "#000000",
+      "color": {"r": 0,"g": 0,"b": 0},
       "distance": 300,
       "storeinverted": 1
     }
   ],
-  "background": "#FFFFFF"
+  "background": {"r": 255,"g": 255,"b": 255}
 }

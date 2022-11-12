@@ -1,24 +1,24 @@
 {
   "width": 400,
   "height": 300,
-  "bigEndian": true,
+  "bigendian": 1,
 
-  "flipHorizontal": false,
-  "flipVertical": false,
+  "fliphorizontal": 0,
+  "flipvertical": 0,
 
   "channels": [
     {
-      "cName": "IMAGE_RED",
-      "color": { "channel": [ 255, 0, 0 ] },
+      "cname": "IMAGE_RED",
+      "color": {"r": 255,"g": 0,"b": 0},
       "distance": 100,
-      "storeInverted": true
+      "storeinverted": 1
     },
     {
-      "cName": "IMAGE_BLACK",
-      "color": { "channel": [ 0, 0, 0 ] },
+      "cname": "IMAGE_BLACK",
+      "color": {"r": 0,"g": 0,"b": 0},
       "distance": 300,
-      "storeInverted": true
+      "storeinverted": 1
     }
   ],
-  "background": { "channel": [ 255, 255, 255 ] }
+  "background": {"r": 255,"g": 255,"b": 255}
 }

@@ -6,7 +6,7 @@ public class Program
 {
     private static void Main(string[] _)
     {
-        var app = CoconaApp.Create();
+        var app = CoconaLiteApp.Create();
 
         app.AddCommand("build", Build);
         app.AddCommand("extract", Extract);

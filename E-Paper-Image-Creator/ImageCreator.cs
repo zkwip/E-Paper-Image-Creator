@@ -34,10 +34,6 @@ namespace Zkwip.EPIC
             try
             {
                 var profile = GetProfile(profileName);
-
-                Console.WriteLine(JsonConvert.SerializeObject(profile, Formatting.Indented));
-                Console.WriteLine(JsonConvert.SerializeObject(StandardProfiles.BlackWhiteRed, Formatting.Indented));
-
                 string content = GetFileContents(file, "file");
                 output ??= GenerateOutputFileName(file, ".png");
 

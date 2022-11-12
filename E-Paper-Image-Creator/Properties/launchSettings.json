@@ -6,7 +6,7 @@
     },
     "EPIC: Extract image": {
       "commandName": "Project",
-      "commandLineArgs": "extract waveshare.cpp -O"
+      "commandLineArgs": "extract waveshare.cpp -Op blackwhiteblue"
     }
   }
 }

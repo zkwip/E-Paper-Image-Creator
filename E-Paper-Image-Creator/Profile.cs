@@ -15,6 +15,7 @@ public struct Profile
 
     // Colors
     public Channel[] Channels;
+
     public Rgb24 Background;
 
     // Properties

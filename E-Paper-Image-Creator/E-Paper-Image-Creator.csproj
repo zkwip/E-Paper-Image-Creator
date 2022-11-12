@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Cocona" Version="2.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />
   </ItemGroup>
 
@@ -22,6 +23,12 @@
     </None>
     <None Update="img.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Profiles\blackwhiteblue.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Profiles\blackwhitered.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="waveshare.cpp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

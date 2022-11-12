@@ -1,0 +1,24 @@
+{
+  "width": 400,
+  "height": 300,
+  "bigEndian": true,
+
+  "flipHorizontal": false,
+  "flipVertical": false,
+
+  "channels": [
+    {
+      "cName": "IMAGE_RED",
+      "color": { "channel": [ 255, 0, 0 ] },
+      "distance": 100,
+      "storeInverted": true
+    },
+    {
+      "cName": "IMAGE_BLACK",
+      "color": { "channel": [ 0, 0, 0 ] },
+      "distance": 300,
+      "storeInverted": true
+    }
+  ],
+  "background": { "channel": [ 255, 255, 255 ] }
+}

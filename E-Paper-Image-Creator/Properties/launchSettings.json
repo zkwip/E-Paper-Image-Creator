@@ -1,8 +1,12 @@
 {
   "profiles": {
-    "E-Paper-Image-Creator": {
+    "EPIC: Build image": {
       "commandName": "Project",
-      "commandLineArgs": "--file img.png --output img.cpp"
+      "commandLineArgs": "build eau.png -o eau.cpp"
+    },
+    "EPIC: Extract image": {
+      "commandName": "Project",
+      "commandLineArgs": "extract waveshare.cpp -o waveshare.png"
     }
   }
 }

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Zkwip.EPIC;
 
@@ -14,7 +15,7 @@ public struct Profile
 
     // Colors
     public Channel[] Channels;
-    public Color Background;
+    public Rgb24 Background;
 
     // Properties
     public Size Size => new(Width, Height);

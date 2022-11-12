@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Zkwip.EPIC
 {
@@ -91,7 +91,7 @@ namespace Zkwip.EPIC
             return bytes;
         }
 
-        internal static Color GetColor(int counter, List<byte>[] bytes, Profile profile)
+        internal static Rgb24 GetColor(int counter, List<byte>[] bytes, Profile profile)
         {
             for (int c = 0; c < profile.Channels.Length; c++)
             {

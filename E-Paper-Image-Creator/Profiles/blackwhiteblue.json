@@ -6,19 +6,29 @@
   "fliphorizontal": 0,
   "flipvertical": 0,
 
-  "channels": [
+  "channels": 2,
+  "channelNames": [
+    "IMAGE_RED",
+    "IMAGE_BLACK"
+  ],
+  "palette": [
     {
-      "cname": "IMAGE_RED",
-      "color": {"r": 0,"g": 0,"b": 255},
-      "distance": 100,
-      "storeinverted": 1
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "bits": [ 1, 1 ]
     },
     {
-      "cname": "IMAGE_BLACK",
-      "color": {"r": 0,"g": 0,"b": 0},
-      "distance": 300,
-      "storeinverted": 1
+      "r": 0,
+      "g": 128,
+      "b": 128,
+      "bits": [ 0, 1 ]
+    },
+    {
+      "r": 0,
+      "g": 0,
+      "b": 0,
+      "bits": [ 1, 0 ]
     }
-  ],
-  "background": {"r": 255,"g": 255,"b": 255}
+  ]
 }

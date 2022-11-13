@@ -8,12 +8,12 @@ namespace Zkwip.EPIC
 {
     internal static class ImageCreator
     {
-        internal static int BuildImage(string file, string? output, string? profileName, bool force)
+        public static int BuildImage(string file, string? output, string? profileName, bool force)
         {
             try
             {
-                var profile = GetProfile(profileName);
-                var img = GetImageFile(file, profile);
+                var profile = ReadProfile(profileName);
+                var img = ReadImageFile(file, profile);
                 output ??= GenerateOutputFileName(file, ".h");
 
                 var result = CodeFileGeneration.BuildImageCode(img, profile);
@@ -29,15 +29,15 @@ namespace Zkwip.EPIC
             }
         }
 
-        internal static int Visualize(string file, string? output, string? profileName, bool force)
+        public static int Extract(string file, string? output, string? profileName, bool force)
         {
             try
             {
-                var profile = GetProfile(profileName);
+                var profile = ReadProfile(profileName);
                 string content = GetFileContents(file, "file");
                 output ??= GenerateOutputFileName(file, ".png");
 
-                var image = ExtractImage(content, 400, 300, profile);
+                var image = ExtractImageContent(content, 400, 300, profile);
 
                 WriteImageToFile(output, image, force);
 
@@ -75,7 +75,7 @@ namespace Zkwip.EPIC
             File.WriteAllText(outfile, contents);
         }
 
-        private static Image<Rgb24> GetImageFile(string file, Profile profile)
+        private static Image<Rgb24> ReadImageFile(string file, Profile profile)
         {
             if (!File.Exists(file))
                 throw new Exception("The provided file does not exist");
@@ -91,7 +91,7 @@ namespace Zkwip.EPIC
             return img;
         }
 
-        private static Profile GetProfile(string? profile)
+        private static Profile ReadProfile(string? profile)
         {
             profile ??= "blackwhitered";
             var profileFile = $"Profiles/{profile}.json";
@@ -101,18 +101,15 @@ namespace Zkwip.EPIC
             return JsonConvert.DeserializeObject<Profile>(profileText);
         }
 
-        private static Image ExtractImage(string content, int width, int height, Profile profile)
+        private static Image ExtractImageContent(string content, int width, int height, Profile profile)
         {
             var bitmap = new Image<Rgb24>(width, height);
-            var bytes = CodeFileReader.ExtractBytes(content, profile);
-            var counter = 0;
+            var channels = CodeFileReader.ExtractDataChannels(content, profile);
 
-            foreach (Point p in ImageTraversal.Pixels(bitmap.Size()))
+            foreach (Point p in profile.Pixels())
             {
-                bitmap[p.X, p.Y] = CodeFileReader.GetColor(counter, bytes, profile);
-                counter++;
+                bitmap[p.X, p.Y] = profile.GetColorFromChannels(p.X, p.Y, channels);
             }
-
 
             return bitmap;
         }

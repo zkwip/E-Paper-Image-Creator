@@ -1,34 +1,27 @@
 {
-  "width": 400,
-  "height": 300,
+  "width": 128,
+  "height": 80,
   "bigendian": 1,
 
   "fliphorizontal": 0,
   "flipvertical": 0,
 
-  "channels": 2,
+  "channels": 1,
   "channelNames": [
-    "IMAGE_RED",
-    "IMAGE_BLACK"
+    "IMAGE_DATA"
   ],
   "palette": [
     {
       "r": 255,
       "g": 255,
       "b": 255,
-      "bits": [ 1, 1 ]
-    },
-    {
-      "r": 0,
-      "g": 128,
-      "b": 128,
-      "bits": [ 0, 1 ]
+      "bits": [ 1 ]
     },
     {
       "r": 0,
       "g": 0,
       "b": 0,
-      "bits": [ 1, 0 ]
+      "bits": [ 0 ]
     }
   ]
 }

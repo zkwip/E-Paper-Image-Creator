@@ -93,7 +93,7 @@ namespace Zkwip.EPIC
 
         private static Profile ReadProfile(string? profile)
         {
-            profile ??= "blackwhitered";
+            profile ??= "kwr_400_300";
             var profileFile = $"Profiles/{profile}.json";
 
             var profileText = GetFileContents(profileFile, "profile");

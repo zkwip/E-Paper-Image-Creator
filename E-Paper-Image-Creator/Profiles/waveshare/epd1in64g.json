@@ -1,35 +1,40 @@
 {
-  "width": 400,
-  "height": 300,
+  "width": 168,
+  "height": 168,
   "bigendian": 1,
 
   "fliphorizontal": 0,
   "flipvertical": 0,
 
   "channels": 2,
-  "interleaved": 0,
+  "interleaved": 1,
   "blockNames": [
-    "IMAGE_YELLOW",
-    "IMAGE_BLACK"
+    "IMAGE_DATA"
   ],
   "palette": [
+    {
+      "r": 0,
+      "g": 0,
+      "b": 0,
+      "bits": [ 0, 0 ]
+    },
     {
       "r": 255,
       "g": 255,
       "b": 255,
-      "bits": [ 1, 1 ]
+      "bits": [ 0, 1 ]
     },
     {
       "r": 192,
       "g": 192,
       "b": 0,
-      "bits": [ 0, 1 ]
+      "bits": [ 1, 0 ]
     },
     {
-      "r": 0,
+      "r": 255,
       "g": 0,
       "b": 0,
-      "bits": [ 1, 0 ]
+      "bits": [ 1, 1 ]
     }
   ]
 }

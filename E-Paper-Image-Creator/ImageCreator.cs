@@ -16,13 +16,13 @@ namespace Zkwip.EPIC
                 var img = ReadImageFile(file, profile);
                 output ??= GenerateOutputFileName(file, ".h");
 
-                var result = CodeFileGeneration.BuildImageCode(img, profile);
+                var code = new CodeFile(profile,img).BuildImageCode();
 
-                WriteOutputToFile(output, result, force);
+                WriteOutputToFile(output, code, force);
 
                 return 0;
             }
-            catch (Exception ex)
+            catch (EpicSettingsException ex)
             {
                 Console.WriteLine(ex.Message);
                 return 1;
@@ -37,13 +37,13 @@ namespace Zkwip.EPIC
                 string content = GetFileContents(file, "file");
                 output ??= GenerateOutputFileName(file, ".png");
 
-                var image = ExtractImageContent(content, 400, 300, profile);
+                var image = ExtractImageContent(content, profile);
 
                 WriteImageToFile(output, image, force);
 
                 return 0;
             }
-            catch (Exception ex)
+            catch (EpicSettingsException ex)
             {
                 Console.WriteLine(ex.Message);
                 return 1;
@@ -53,7 +53,7 @@ namespace Zkwip.EPIC
         private static string GetFileContents(string file, string desc)
         {
             if (!File.Exists(file))
-                throw new Exception($"The provided {desc} does not exist");
+                throw new EpicSettingsException($"The provided {desc} does not exist");
 
             var content = File.ReadAllText(file);
             return content;
@@ -62,7 +62,7 @@ namespace Zkwip.EPIC
         private static void WriteImageToFile(string output, Image bitmap, bool force)
         {
             if (File.Exists(output) && !force)
-                throw new Exception($"The output file \"{output}\" already exist");
+                throw new EpicSettingsException($"The output file \"{output}\" already exist");
 
             bitmap.Save(output);
         }
@@ -70,7 +70,7 @@ namespace Zkwip.EPIC
         private static void WriteOutputToFile(string outfile, string contents, bool force)
         {
             if (File.Exists(outfile) && !force)
-                throw new Exception($"The output file \"{outfile}\" already exist");
+                throw new EpicSettingsException($"The output file \"{outfile}\" already exist");
 
             File.WriteAllText(outfile, contents);
         }
@@ -78,15 +78,15 @@ namespace Zkwip.EPIC
         private static Image<Rgb24> ReadImageFile(string file, Profile profile)
         {
             if (!File.Exists(file))
-                throw new Exception("The provided file does not exist");
+                throw new EpicSettingsException("The provided file does not exist");
 
             var img = Image.Load<Rgb24>(file);
 
             if (img.Size().IsEmpty)
-                throw new Exception("The provided file is not an image file");
+                throw new EpicSettingsException("The provided file is not an image file");
 
             if (img.Width < profile.Width || img.Height < profile.Height)
-                throw new Exception("The image is smaller than the target");
+                throw new EpicSettingsException("The image is smaller than the target");
 
             return img;
         }
@@ -101,10 +101,10 @@ namespace Zkwip.EPIC
             return JsonConvert.DeserializeObject<Profile>(profileText);
         }
 
-        private static Image ExtractImageContent(string content, int width, int height, Profile profile)
+        private static Image ExtractImageContent(string content, Profile profile)
         {
-            var bitmap = new Image<Rgb24>(width, height);
-            var channels = CodeFileReader.ExtractDataChannels(content, profile);
+            var bitmap = new Image<Rgb24>(profile.Width, profile.Height);
+            var channels = new CodeFile(profile, content);
 
             foreach (Point p in profile.Pixels())
             {

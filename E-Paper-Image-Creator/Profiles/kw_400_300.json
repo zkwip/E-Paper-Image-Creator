@@ -7,8 +7,9 @@
   "flipvertical": 0,
 
   "channels": 1,
-  "channelNames": [
-    "IMAGE_BLACK"
+  "interleaved": 0,
+  "blockNames": [
+    "IMAGE_DATA"
   ],
   "palette": [
     {

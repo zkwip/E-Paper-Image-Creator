@@ -17,9 +17,10 @@ public struct Profile
     public bool FlipVertical;
 
     public int Channels;
+    public bool Interleaved;
 
     // Color Management
-    public string[] ChannelNames;
+    public string[] BlockNames;
     public Swatch[] Palette;
 
     public IEnumerable<Point> Pixels()
@@ -53,9 +54,9 @@ public struct Profile
 
     internal static int Difference(Rgb24 a, Rgb24 b) => Math.Abs(a.R - b.R) + Math.Abs(a.G - b.G) + Math.Abs(a.B - b.B);
 
-    internal Rgb24 GetColorFromChannels(int x, int y, DataChannel[] channels)
+    internal Rgb24 GetColorFromChannels(int x, int y, CodeFile file)
     {
-        var colorBits = GetPixelBits(x, y, channels);
+        var colorBits = file.GetBlockPixel(x, y);
 
         foreach (Swatch s in Palette)
         {
@@ -63,17 +64,7 @@ public struct Profile
                 return s;
         }
 
-        throw new Exception($"No matching palette color found with bits {DisplayBits(colorBits)}.");
-    }
-
-    private bool[] GetPixelBits(int x, int y, DataChannel[] channels)
-    {
-        bool[] colorBits = new bool[Channels];
-
-        for (int c = 0; c < Channels; c++)
-            colorBits[c] = channels[c][x, y];
-
-        return colorBits;
+        throw new EpicSettingsException($"No matching palette color found with bits {DisplayBits(colorBits)}.");
     }
 
     private static object DisplayBits(bool[] colorBits)
@@ -84,5 +75,15 @@ public struct Profile
             s += (b ? 1 : 0) + " ";
 
         return s + "]";
+    }
+
+    internal int OutputBlockLength
+    {
+        get
+        {
+            if (Interleaved)
+                return (Width * Height * Channels - 1) / 8 + 1;
+            return (Width * Height - 1) / 8 + 1;
+        }
     }
 }

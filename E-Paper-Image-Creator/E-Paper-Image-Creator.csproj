@@ -54,9 +54,6 @@
     <None Update="Profiles\waveshare\epd1in54b.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Profiles\waveshare\epd1in64g.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="waveshare.cpp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

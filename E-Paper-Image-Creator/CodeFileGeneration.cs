@@ -1,21 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using SixLabors.ImageSharp;
+﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using System;
 
 namespace Zkwip.EPIC
 {
     internal class CodeFileGeneration
     {
-        private static string GenerateChannelCode(List<byte> list, Channel c, int perLine = 16)
+        private static string GenerateChannelCode(DataChannel channel, int perLine = 16)
         {
-            string res = $"\nconst unsigned char {c.CName}[] = {{";
+            string res = $"\nconst unsigned char {channel.ChannelName}[] = {{";
 
-            for (int i = 0; i < list.Count; i++)
+            for (int i = 0; i < channel.ByteCount; i++)
             {
-                res += String.Format("0x{0:x2}, ", list[i]);
+                res += String.Format("0x{0:x2}, ", channel[i]);
 
-                if (i % perLine == perLine - 1) res += "\n";
+                if (i % perLine == perLine - 1)
+                    res += "\n";
             }
 
             return res + "};\n";
@@ -28,52 +28,27 @@ namespace Zkwip.EPIC
 
         internal static string BuildImageCode(Image<Rgb24> img, Profile profile)
         {
-            var channelCount = profile.Channels.Length;
-            var workingBytes = new byte[channelCount];
-
-            var outputBytes = new List<byte>[channelCount];
-
-            for (int c = 0; c < channelCount; c++)
-                outputBytes[c] = new List<byte>();
-
-            var counter = 0;
-
-            foreach (var pixel in ColorManagement.PixelColors(img, profile))
+            var channels = new DataChannel[profile.Channels];
+            for (int i = 0; i < profile.Channels; i++)
             {
-                var bits = ColorManagement.Map(pixel, profile.Channels);
+                channels[i] = new DataChannel(profile, i);
+            }
 
-                for (int c = 0; c < channelCount; c++)
+            foreach ((int x, int y) in profile.Pixels())
+            {
+                var bits = profile.GetClosestPaletteColor(img[x, y]);
+
+                foreach (DataChannel channel in channels)
                 {
-                    byte bitmask = ImageTraversal.GetBitMask(profile, counter);
-
-                    if (bits[c] != profile.Channels[c].StoreInverted)
-                        workingBytes[c] += bitmask;
-                }
-
-                counter++;
-
-                if (counter == 8)
-                {
-                    for (int c = 0; c < channelCount; c++)
-                    {
-                        outputBytes[c].Add(workingBytes[c]);
-                        workingBytes[c] = 0;
-                        counter = 0;
-                    }
+                    channel[x, y] = bits[channel.ChannelId];
                 }
             }
 
-            if (counter != 0)
-            {
-                for (int c = 0; c < channelCount; c++)
-                    outputBytes[c].Add(workingBytes[c]);
-            }
+            string res = GenerateFileStart(profile);
 
-            string res = CodeFileGeneration.GenerateFileStart(profile);
-
-            for (int c = 0; c < channelCount; c++)
+            for (int c = 0; c < profile.Channels; c++)
             {
-                res += CodeFileGeneration.GenerateChannelCode(outputBytes[c], profile.Channels[c]);
+                res += GenerateChannelCode(channels[c]);
             }
 
             return res;

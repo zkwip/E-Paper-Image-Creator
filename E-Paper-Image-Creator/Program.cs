@@ -25,5 +25,5 @@ public class Program
             [Option('o', Description = "Where to write the result")] string? output,
             [Option('p', Description = "The name of the profile to use")] string? profile,
             [Option('O', Description = "Write even if the output file already exists", ValueName = "override")] bool force
-        ) => ImageCreator.Visualize(file, output, profile, force);
+        ) => ImageCreator.Extract(file, output, profile, force);
 }

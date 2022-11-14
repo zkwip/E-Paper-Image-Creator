@@ -29,6 +29,36 @@
     <None Update="Examples\eau.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Examples\lolin\wemos_2_13_tri_color.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Examples\lolin\wemos_2_13_tri_color_ssd1680.h">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Examples\seeed\grove_triple_1_54.ino">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Examples\seeed\grove_triple_2_13.ino">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Examples\waveshare\epd1in02d.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Examples\waveshare\epd1in54.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Examples\waveshare\epd1in54b.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Examples\waveshare\epd1in54c.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Examples\waveshare\epd1in64g.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Examples\waveshare\epd2in13.cpp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="img.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -41,16 +71,16 @@
     <None Update="Profiles\kwr_400_300.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Profiles\lolin\2_13_tri_color_eink_ssd1680.json">
+    <None Update="Profiles\lolin\wemos_2_13_tri_color_ssd1680.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Profiles\lolin\2_13_tri_color_eink.json">
+    <None Update="Profiles\lolin\wemos_2_13_tri_color.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Profiles\seeed\grove_tceid_2_13.json">
+    <None Update="Profiles\seeed\grove_triple_2_13.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Profiles\seeed\grove_tceid_1_54.json">
+    <None Update="Profiles\seeed\grove_triple_1_54.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Profiles\waveshare\epd1in54.json">
@@ -77,6 +107,10 @@
     <None Update="waveshare.cpp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Examples\waveshare\" />
   </ItemGroup>
 
 </Project>

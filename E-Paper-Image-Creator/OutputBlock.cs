@@ -31,7 +31,7 @@ namespace Zkwip.EPIC
         private static string ReadBlock(ref int cursor, string content, out string name)
         {
             ReadTo(ref cursor, content, "const unsigned char");
-            name = ReadTo(ref cursor, content, "[]");
+            name = ReadTo(ref cursor, content, "[");
             ReadTo(ref cursor, content, "{");
             return ReadTo(ref cursor, content, "};");
         }

@@ -41,9 +41,9 @@ namespace Zkwip.EPIC
             }
         }
 
-        internal string GenerateLiteral(int perLine = 16)
+        internal string GenerateLiteral(bool disableProgmem, int perLine = 16)
         {
-            string res = $"\nconst unsigned char {Name}[] = {{";
+            string res = $"\nconst unsigned char {Name}[] {(disableProgmem ? "" : "PROGMEM ")}= {{\n";
 
             for (int i = 0; i < ByteCount; i++)
             {

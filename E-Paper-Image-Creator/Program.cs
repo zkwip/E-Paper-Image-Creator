@@ -17,8 +17,9 @@ public class Program
             [Argument("file", Description = "The image file to convert")] string file,
             [Option('o', Description = "Where to write the result")] string? output,
             [Option('p', Description = "The name of the profile to use")] string? profile,
-            [Option('O', Description = "Write even if the output file already exists", ValueName = "override")] bool force
-        ) => ImageCreator.BuildImage(file, output, profile, force);
+            [Option("override", new char[] {'O'}, Description = "Write even if the output file already exists")] bool force,
+            [Option("no-progmem", Description = "Remove the PROGMEM macro for use with devices other than Arduino")] bool progmem
+        ) => ImageCreator.BuildImage(file, output, profile, force, progmem);
 
     private static void Extract(
             [Argument("file", Description = "The code file to get the image from")] string file,

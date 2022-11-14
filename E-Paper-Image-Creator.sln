@@ -5,6 +5,8 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "E-Paper-Image-Creator", "E-Paper-Image-Creator\E-Paper-Image-Creator.csproj", "{081A6A09-F958-4C25-8FA3-1284A76C088B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPICTests", "EPICTests\EPICTests.csproj", "{4D4B7C6D-DE41-4D23-940E-9490FCC63184}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{081A6A09-F958-4C25-8FA3-1284A76C088B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{081A6A09-F958-4C25-8FA3-1284A76C088B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{081A6A09-F958-4C25-8FA3-1284A76C088B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D4B7C6D-DE41-4D23-940E-9490FCC63184}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D4B7C6D-DE41-4D23-940E-9490FCC63184}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D4B7C6D-DE41-4D23-940E-9490FCC63184}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D4B7C6D-DE41-4D23-940E-9490FCC63184}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

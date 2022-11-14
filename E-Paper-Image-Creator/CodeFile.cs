@@ -8,59 +8,53 @@ namespace Zkwip.EPIC
         private readonly Profile _profile;
         private readonly OutputBlock[] _blocks;
 
-        public CodeFile(Profile profile, Image<Rgb24> img)
+        private CodeFile(Profile profile)
         {
-            _blocks = new OutputBlock[profile.BlockNames.Length];
             _profile = profile;
-
-            for (int i = 0; i < _profile.BlockNames.Length; i++)
-            {
-                _blocks[i] = new OutputBlock(_profile.OutputBlockLength, _profile.BlockNames[i], _profile.BigEndian);
-            }
-
-            foreach ((int x, int y) in _profile.Pixels())
-            {
-                var bits = _profile.GetClosestPaletteColor(img[x, y]);
-                SetBlockPixel(x, y, bits);
-            }
+            _blocks = new OutputBlock[profile.BlockNames.Length];
         }
 
-        private void SetBlockPixel(int x, int y, bool[] bits)
+        internal static CodeFile FromImage(Profile profile, Image<Rgb24> img)
+        {
+            var cf = new CodeFile(profile);
+
+            for (int i = 0; i < profile.BlockNames.Length; i++)
+            {
+                cf._blocks[i] = new OutputBlock(profile.OutputBlockLength, profile.BlockNames[i], profile.BigEndian);
+            }
+
+            foreach ((int x, int y) in profile.Pixels())
+            {
+                var bits = profile.GetClosestPaletteColor(img[x, y]);
+                cf.SetBlockPixel(x, y, bits);
+            }
+
+            return cf;
+        }
+
+        internal static CodeFile FromContent(Profile profile, string content)
+        {
+            var cf = new CodeFile(profile);
+            cf.ReadSourceContent(content);
+            return cf;
+        }
+
+        internal void SetBlockPixel(int x, int y, bool[] bits)
         {
             int index = GetBlockIndex(x, y);
 
-            if (_profile.Interleaved) 
-                SetBlockPixelInterleaved(index, bits);
-            else
-                SetBlockPixelSequential(bits, index);
+            for (int c = 0; c < bits.Length; c++)
+                _blocks[_profile.Interleaved ? 0 : c].SetBit(index + (_profile.Interleaved ? c : 0), bits[c]);
         }
 
         internal bool[] GetBlockPixel(int x, int y)
         {
             int index = GetBlockIndex(x, y);
 
-            if (_profile.Interleaved)
-                return GetBlockPixelInterleaved(index);
-            else
-                return GetBlockPixelSequential(index);
-        }
-
-        private bool[] GetBlockPixelInterleaved(int index)
-        {
             bool[] colorBits = new bool[_profile.Channels];
 
             for (int c = 0; c < _profile.Channels; c++)
-                colorBits[c] = _blocks[0].GetBit(index + c);
-
-            return colorBits;
-        }
-
-        internal bool[] GetBlockPixelSequential(int index)
-        {
-            bool[] colorBits = new bool[_profile.Channels];
-
-            for (int c = 0; c < _profile.Channels; c++)
-                colorBits[c] = _blocks[c].GetBit(index);
+                colorBits[c] = _blocks[(_profile.Interleaved ? 0 : c)].GetBit(index + (_profile.Interleaved ? c : 0));
 
             return colorBits;
         }
@@ -68,64 +62,20 @@ namespace Zkwip.EPIC
         private int GetBlockIndex(int x, int y)
         {
             int pixel = x + _profile.Width * y;
+
             if (_profile.Interleaved) 
                 return pixel * _profile.Channels;
 
             return pixel;
         }
 
-        private void SetBlockPixelInterleaved(int index, bool[] bits)
+        private void ReadSourceContent(string content)
         {
-            for (int i = 0; i < bits.Length; i++)
-                _blocks[0].SetBit(index + i, bits[i]);
-        }
-
-        private void SetBlockPixelSequential(bool[] bits, int index)
-        {
-            for (int i = 0; i < _blocks.Length; i++)
-                _blocks[i].SetBit(index, bits[i]);
-        }
-
-        internal CodeFile(Profile profile, string content)
-        {
-            _profile = profile;
-            _blocks = new OutputBlock[profile.BlockNames.Length];
-
-            const string arrayNamePrefix = "const unsigned char";
-            const string arrayNameSuffix = "[]";
-            const string arrayOpening = "{";
-            const string arrayClosure = "};";
-
             var cursor = 0;
-
-            foreach (string _ in profile.BlockNames)
+            foreach (string _ in _profile.BlockNames)
             {
-                // Find "const unsign.."
-                cursor = content.IndexOf(arrayNamePrefix, cursor);
-                if (cursor == -1)
-                    break;
-
-                cursor += arrayNamePrefix.Length;
-
-                // Capture name
-                var nameEnd = content.IndexOf(arrayNameSuffix, cursor);
-                var name = content[cursor..nameEnd].Trim();
-                cursor = nameEnd + arrayNameSuffix.Length;
-
-                // Find start of the array literal
-                var arrayStart = content.IndexOf(arrayOpening, cursor);
-                cursor = arrayStart + arrayOpening.Length;
-
-                // Capture the literal
-                var arrayEnd = content.IndexOf(arrayClosure, cursor);
-                string arrayText = content[cursor..arrayEnd];
-                cursor = arrayEnd + arrayClosure.Length;
-
-                // Match with the name
-                int id = FindBlockId(name);
-
-                _blocks[id] = new OutputBlock(profile.OutputBlockLength, name, profile.BigEndian);
-                _blocks[id].FillFromText(SkipComments(arrayText));
+                var block = OutputBlock.FromText(ref cursor, content, _profile.OutputBlockLength, _profile.BigEndian);
+                _blocks[FindBlockId(block.Name)] = block;
             }
         }
 
@@ -157,42 +107,6 @@ namespace Zkwip.EPIC
                 res += _blocks[c].GenerateLiteral(disableProgmem);
 
             return res;
-        }
-
-        private static string SkipComments(string input)
-        {
-            input = input.ToLower();
-            var cursor = 0;
-
-            while (true)
-            {
-                if (cursor >= input.Length - 2)
-                    break;
-
-                if (input.Substring(cursor, 2) == "//")
-                {
-                    input = Slice(input, cursor, input.IndexOf("\n", cursor));
-                    continue;
-                }
-
-                if (input.Substring(cursor, 2) == "/*")
-                {
-                    input = Slice(input, cursor, input.IndexOf("*/", cursor));
-                    continue;
-                }
-
-                cursor++;
-            }
-
-            return input;
-        }
-
-        private static string Slice(string input, int firstCut, int secondCut)
-        {
-            if (secondCut < 0)
-                secondCut += input.Length;
-
-            return input[..firstCut] + input[secondCut..];
         }
     }
 }

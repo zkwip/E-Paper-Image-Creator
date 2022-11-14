@@ -12,13 +12,43 @@ namespace Zkwip.EPIC
 
         public OutputBlock(int byteCount, string name, bool bigEndian)
         {
-            _data = new byte[byteCount];
             Name = name;
             ByteCount = byteCount;
             BigEndian = bigEndian;
+
+            _data = new byte[byteCount];
         }
 
-        internal void FillFromText(string text)
+        public static OutputBlock FromText(ref int cursor, string content, int blockLength, bool bigEndian)
+        {
+            string arrayText = ReadBlock(ref cursor, content, out string name);
+            var block = new OutputBlock(blockLength, name, bigEndian);
+
+            block.FillFromText(SkipComments(arrayText));
+            return block;
+        }
+
+        private static string ReadBlock(ref int cursor, string content, out string name)
+        {
+            ReadTo(ref cursor, content, "const unsigned char");
+            name = ReadTo(ref cursor, content, "[]");
+            ReadTo(ref cursor, content, "{");
+            return ReadTo(ref cursor, content, "};");
+        }
+
+        private static string ReadTo(ref int cursor, string content, string handle)
+        {
+            var end = content.IndexOf(handle, cursor);
+            if (end == -1)
+                throw new ParseException("Failed to find the array literal");
+
+            string text = content[cursor..end].Trim();
+            cursor = end + handle.Length;
+
+            return text;
+        }
+
+        private void FillFromText(string text)
         {
             var cursor = 0;
             for (int i = 0; i < ByteCount; i++)
@@ -83,6 +113,42 @@ namespace Zkwip.EPIC
 
             byte bitmask = (byte)(1 << position);
             return bitmask;
+        }
+
+        private static string SkipComments(string input)
+        {
+            input = input.ToLower();
+            var cursor = 0;
+
+            while (true)
+            {
+                if (cursor >= input.Length - 2)
+                    break;
+
+                if (input.Substring(cursor, 2) == "//")
+                {
+                    input = Slice(input, cursor, input.IndexOf("\n", cursor));
+                    continue;
+                }
+
+                if (input.Substring(cursor, 2) == "/*")
+                {
+                    input = Slice(input, cursor, input.IndexOf("*/", cursor));
+                    continue;
+                }
+
+                cursor++;
+            }
+
+            return input;
+        }
+
+        private static string Slice(string input, int firstCut, int secondCut)
+        {
+            if (secondCut < 0)
+                secondCut += input.Length;
+
+            return input[..firstCut] + input[secondCut..];
         }
     }
 }

@@ -12,61 +12,40 @@ namespace Zkwip.EPIC
 
         public OutputBlock(int byteCount, string name, bool bigEndian)
         {
-            _data = new byte[byteCount];
             Name = name;
             ByteCount = byteCount;
             BigEndian = bigEndian;
+
+            _data = new byte[byteCount];
         }
 
-        public OutputBlock(ref int cursor, string content, int blockLength, bool bigEndian)
+        public static OutputBlock FromText(ref int cursor, string content, int blockLength, bool bigEndian)
         {
             string arrayText = ReadBlock(ref cursor, content, out string name);
+            var block = new OutputBlock(blockLength, name, bigEndian);
 
-            _data = new byte[blockLength];
-            Name = name;
-            BigEndian = bigEndian;
-            ByteCount = blockLength;
-
-            FillFromText(SkipComments(arrayText));
+            block.FillFromText(SkipComments(arrayText));
+            return block;
         }
 
         private static string ReadBlock(ref int cursor, string content, out string name)
         {
-            const string arrayNamePrefix = "const unsigned char";
-            const string arrayNameSuffix = "[]";
-            const string arrayOpening = "{";
-            const string arrayClosure = "};";
+            ReadTo(ref cursor, content, "const unsigned char");
+            name = ReadTo(ref cursor, content, "[]");
+            ReadTo(ref cursor, content, "{");
+            return ReadTo(ref cursor, content, "};");
+        }
 
-            // Find "const unsign.."
-            cursor = content.IndexOf(arrayNamePrefix, cursor);
-            if (cursor == -1)
+        private static string ReadTo(ref int cursor, string content, string handle)
+        {
+            var end = content.IndexOf(handle, cursor);
+            if (end == -1)
                 throw new ParseException("Failed to find the array literal");
 
-            cursor += arrayNamePrefix.Length;
+            string text = content[cursor..end].Trim();
+            cursor = end + handle.Length;
 
-            // Capture name
-            var nameEnd = content.IndexOf(arrayNameSuffix, cursor);
-            if (nameEnd == -1)
-                throw new ParseException("Failed to find the array literal");
-
-            name = content[cursor..nameEnd].Trim();
-            cursor = nameEnd + arrayNameSuffix.Length;
-
-            // Find start of the array literal
-            var arrayStart = content.IndexOf(arrayOpening, cursor);
-            if (arrayStart == -1)
-                throw new ParseException("Failed to find the array literal");
-
-            cursor = arrayStart + arrayOpening.Length;
-
-            // Capture the literal
-            var arrayEnd = content.IndexOf(arrayClosure, cursor);
-            if (arrayEnd == -1)
-                throw new ParseException("Failed to find the array literal");
-
-            string arrayText = content[cursor..arrayEnd];
-            cursor = arrayEnd + arrayClosure.Length;
-            return arrayText;
+            return text;
         }
 
         internal void FillFromText(string text)

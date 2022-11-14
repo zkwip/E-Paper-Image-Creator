@@ -36,38 +36,18 @@ namespace Zkwip.EPIC
         {
             int index = GetBlockIndex(x, y);
 
-            if (_profile.Interleaved) 
-                SetBlockPixelInterleaved(index, bits);
-            else
-                SetBlockPixelSequential(bits, index);
+            for (int c = 0; c < bits.Length; c++)
+                _blocks[_profile.Interleaved ? 0 : c].SetBit(index + (_profile.Interleaved ? c : 0), bits[c]);
         }
 
         internal bool[] GetBlockPixel(int x, int y)
         {
             int index = GetBlockIndex(x, y);
 
-            if (_profile.Interleaved)
-                return GetBlockPixelInterleaved(index);
-            else
-                return GetBlockPixelSequential(index);
-        }
-
-        private bool[] GetBlockPixelInterleaved(int index)
-        {
             bool[] colorBits = new bool[_profile.Channels];
 
             for (int c = 0; c < _profile.Channels; c++)
-                colorBits[c] = _blocks[0].GetBit(index + c);
-
-            return colorBits;
-        }
-
-        internal bool[] GetBlockPixelSequential(int index)
-        {
-            bool[] colorBits = new bool[_profile.Channels];
-
-            for (int c = 0; c < _profile.Channels; c++)
-                colorBits[c] = _blocks[c].GetBit(index);
+                colorBits[c] = _blocks[(_profile.Interleaved ? 0 : c)].GetBit(index + (_profile.Interleaved ? c : 0));
 
             return colorBits;
         }
@@ -75,22 +55,11 @@ namespace Zkwip.EPIC
         private int GetBlockIndex(int x, int y)
         {
             int pixel = x + _profile.Width * y;
+
             if (_profile.Interleaved) 
                 return pixel * _profile.Channels;
 
             return pixel;
-        }
-
-        private void SetBlockPixelInterleaved(int index, bool[] bits)
-        {
-            for (int i = 0; i < bits.Length; i++)
-                _blocks[0].SetBit(index + i, bits[i]);
-        }
-
-        private void SetBlockPixelSequential(bool[] bits, int index)
-        {
-            for (int i = 0; i < _blocks.Length; i++)
-                _blocks[i].SetBit(index, bits[i]);
         }
 
         private void ReadSourceContent(string content)
@@ -98,8 +67,7 @@ namespace Zkwip.EPIC
             var cursor = 0;
             foreach (string _ in _profile.BlockNames)
             {
-                var block = new OutputBlock(ref cursor, content, _profile.OutputBlockLength, _profile.BigEndian);
-
+                var block = OutputBlock.FromText(ref cursor, content, _profile.OutputBlockLength, _profile.BigEndian);
                 _blocks[FindBlockId(block.Name)] = block;
             }
         }

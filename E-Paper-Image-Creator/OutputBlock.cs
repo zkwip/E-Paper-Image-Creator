@@ -40,7 +40,7 @@ namespace Zkwip.EPIC
         {
             var end = content.IndexOf(handle, cursor);
             if (end == -1)
-                throw new ParseException("Failed to find the array literal");
+                throw new ParseException($"Failed to find the handle \"{handle}\" in array literal");
 
             string text = content[cursor..end].Trim();
             cursor = end + handle.Length;

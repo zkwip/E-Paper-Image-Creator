@@ -1,35 +1,28 @@
 {
-  "width": 112,
+  "width": 122,
   "height": 250,
   "bigendian": 1,
 
   "fliphorizontal": 0,
   "flipvertical": 0,
 
-  "channels": 2,
+  "channels": 1,
   "interleaved": 0,
   "blockNames": [
-    "gImage_red",
-    "gImage_black"
+    "IMAGE_DATA"
   ],
   "palette": [
     {
       "r": 255,
       "g": 255,
       "b": 255,
-      "bits": [ 0, 1 ]
-    },
-    {
-      "r": 255,
-      "g": 0,
-      "b": 0,
-      "bits": [ 1, 1 ]
+      "bits": [ 1 ]
     },
     {
       "r": 0,
       "g": 0,
       "b": 0,
-      "bits": [ 0, 0 ]
+      "bits": [ 0 ]
     }
   ]
 }

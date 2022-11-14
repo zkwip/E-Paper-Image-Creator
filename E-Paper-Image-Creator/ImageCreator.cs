@@ -8,46 +8,32 @@ namespace Zkwip.EPIC
 {
     internal static class ImageCreator
     {
-        public static int BuildImage(string file, string? output, string? profileName, bool force, bool disableProgmem)
+        public static void BuildImage(string file, string? output, string? profileName, bool force, bool disableProgmem)
         {
-            try
-            {
-                var profile = ReadProfile(profileName);
-                var img = ReadImageFile(file, profile);
-                output ??= GenerateOutputFileName(file, ".h");
+            var profile = ReadProfile(profileName);
+            var img = ReadImageFile(file, profile);
+            output ??= GenerateOutputFileName(file, ".h");
 
-                var code = CodeFile.FromImage(profile,img).BuildImageCode(disableProgmem);
+            var code = CodeFile.FromImage(profile,img).BuildImageCode(disableProgmem);
 
-                WriteOutputToFile(output, code, force);
-
-                return 0;
-            }
-            catch (EpicSettingsException ex)
-            {
-                Console.WriteLine(ex.Message);
-                return 1;
-            }
+            WriteOutputToFile(output, code, force);
         }
 
-        public static int Extract(string file, string? output, string? profileName, bool force)
+        public static void ValidateProfile(string profileName)
         {
-            try
-            {
-                var profile = ReadProfile(profileName);
+            var profile = ReadProfile(profileName);
+            profile.Validate();
+        }
+
+        public static void Extract(string file, string? output, string? profileName, bool force)
+        {
+            var profile = ReadProfile(profileName);
                 string content = GetFileContents(file, "file");
                 output ??= GenerateOutputFileName(file, ".png");
 
                 var image = ExtractImageContent(content, profile);
 
                 WriteImageToFile(output, image, force);
-
-                return 0;
-            }
-            catch (EpicSettingsException ex)
-            {
-                Console.WriteLine(ex.Message);
-                return 1;
-            }
         }
 
         private static string GetFileContents(string file, string desc)
@@ -59,12 +45,13 @@ namespace Zkwip.EPIC
             return content;
         }
 
-        private static void WriteImageToFile(string output, Image bitmap, bool force)
+        private static void WriteImageToFile(string filename, Image bitmap, bool force)
         {
-            if (File.Exists(output) && !force)
-                throw new EpicSettingsException($"The output file \"{output}\" already exist");
+            if (File.Exists(filename) && !force)
+                throw new EpicSettingsException($"The output file \"{filename}\" already exist");
 
-            bitmap.Save(output);
+            new FileInfo(filename).Directory!.Create();
+            bitmap.Save(filename);
         }
 
         private static void WriteOutputToFile(string outfile, string contents, bool force)

@@ -9,6 +9,7 @@
     <AssemblyName>EPIC</AssemblyName>
     <Title>E-Paper Image Creator</Title>
     <Authors>Joep Bernards</Authors>
+    <PublisherName>zkwip</PublisherName>
   </PropertyGroup>
 
   <ItemGroup>

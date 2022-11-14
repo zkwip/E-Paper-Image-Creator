@@ -8,7 +8,7 @@ namespace Zkwip.EPIC
 {
     internal static class ImageCreator
     {
-        public static int BuildImage(string file, string? output, string? profileName, bool force)
+        public static int BuildImage(string file, string? output, string? profileName, bool force, bool disableProgmem)
         {
             try
             {
@@ -16,7 +16,7 @@ namespace Zkwip.EPIC
                 var img = ReadImageFile(file, profile);
                 output ??= GenerateOutputFileName(file, ".h");
 
-                var code = new CodeFile(profile,img).BuildImageCode();
+                var code = new CodeFile(profile,img).BuildImageCode(disableProgmem);
 
                 WriteOutputToFile(output, code, force);
 

@@ -1,4 +1,4 @@
-﻿namespace EPICTests
+﻿namespace Zkwip.EPIC.Tests
 {
     public class OutputBlockTests
     {

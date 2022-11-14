@@ -18,6 +18,57 @@ namespace Zkwip.EPIC
             BigEndian = bigEndian;
         }
 
+        public OutputBlock(ref int cursor, string content, int blockLength, bool bigEndian)
+        {
+            string arrayText = ReadBlock(ref cursor, content, out string name);
+
+            _data = new byte[blockLength];
+            Name = name;
+            BigEndian = bigEndian;
+            ByteCount = blockLength;
+
+            FillFromText(SkipComments(arrayText));
+        }
+
+        private static string ReadBlock(ref int cursor, string content, out string name)
+        {
+            const string arrayNamePrefix = "const unsigned char";
+            const string arrayNameSuffix = "[]";
+            const string arrayOpening = "{";
+            const string arrayClosure = "};";
+
+            // Find "const unsign.."
+            cursor = content.IndexOf(arrayNamePrefix, cursor);
+            if (cursor == -1)
+                throw new ParseException("Failed to find the array literal");
+
+            cursor += arrayNamePrefix.Length;
+
+            // Capture name
+            var nameEnd = content.IndexOf(arrayNameSuffix, cursor);
+            if (nameEnd == -1)
+                throw new ParseException("Failed to find the array literal");
+
+            name = content[cursor..nameEnd].Trim();
+            cursor = nameEnd + arrayNameSuffix.Length;
+
+            // Find start of the array literal
+            var arrayStart = content.IndexOf(arrayOpening, cursor);
+            if (arrayStart == -1)
+                throw new ParseException("Failed to find the array literal");
+
+            cursor = arrayStart + arrayOpening.Length;
+
+            // Capture the literal
+            var arrayEnd = content.IndexOf(arrayClosure, cursor);
+            if (arrayEnd == -1)
+                throw new ParseException("Failed to find the array literal");
+
+            string arrayText = content[cursor..arrayEnd];
+            cursor = arrayEnd + arrayClosure.Length;
+            return arrayText;
+        }
+
         internal void FillFromText(string text)
         {
             var cursor = 0;
@@ -83,6 +134,42 @@ namespace Zkwip.EPIC
 
             byte bitmask = (byte)(1 << position);
             return bitmask;
+        }
+
+        private static string SkipComments(string input)
+        {
+            input = input.ToLower();
+            var cursor = 0;
+
+            while (true)
+            {
+                if (cursor >= input.Length - 2)
+                    break;
+
+                if (input.Substring(cursor, 2) == "//")
+                {
+                    input = Slice(input, cursor, input.IndexOf("\n", cursor));
+                    continue;
+                }
+
+                if (input.Substring(cursor, 2) == "/*")
+                {
+                    input = Slice(input, cursor, input.IndexOf("*/", cursor));
+                    continue;
+                }
+
+                cursor++;
+            }
+
+            return input;
+        }
+
+        private static string Slice(string input, int firstCut, int secondCut)
+        {
+            if (secondCut < 0)
+                secondCut += input.Length;
+
+            return input[..firstCut] + input[secondCut..];
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Zkwip.EPIC
         private readonly Profile _profile;
         private readonly OutputBlock[] _blocks;
 
-        public CodeFile(Profile profile, Image<Rgb24> img)
+        internal CodeFile(Profile profile, Image<Rgb24> img)
         {
             _blocks = new OutputBlock[profile.BlockNames.Length];
             _profile = profile;
@@ -23,6 +23,13 @@ namespace Zkwip.EPIC
                 var bits = _profile.GetClosestPaletteColor(img[x, y]);
                 SetBlockPixel(x, y, bits);
             }
+        }
+
+        internal CodeFile(Profile profile, string content)
+        {
+            _profile = profile;
+            _blocks = new OutputBlock[profile.BlockNames.Length];
+            ReadSourceContent(content);
         }
 
         private void SetBlockPixel(int x, int y, bool[] bits)
@@ -86,46 +93,14 @@ namespace Zkwip.EPIC
                 _blocks[i].SetBit(index, bits[i]);
         }
 
-        internal CodeFile(Profile profile, string content)
+        private void ReadSourceContent(string content)
         {
-            _profile = profile;
-            _blocks = new OutputBlock[profile.BlockNames.Length];
-
-            const string arrayNamePrefix = "const unsigned char";
-            const string arrayNameSuffix = "[]";
-            const string arrayOpening = "{";
-            const string arrayClosure = "};";
-
             var cursor = 0;
-
-            foreach (string _ in profile.BlockNames)
+            foreach (string _ in _profile.BlockNames)
             {
-                // Find "const unsign.."
-                cursor = content.IndexOf(arrayNamePrefix, cursor);
-                if (cursor == -1)
-                    break;
+                var block = new OutputBlock(ref cursor, content, _profile.OutputBlockLength, _profile.BigEndian);
 
-                cursor += arrayNamePrefix.Length;
-
-                // Capture name
-                var nameEnd = content.IndexOf(arrayNameSuffix, cursor);
-                var name = content[cursor..nameEnd].Trim();
-                cursor = nameEnd + arrayNameSuffix.Length;
-
-                // Find start of the array literal
-                var arrayStart = content.IndexOf(arrayOpening, cursor);
-                cursor = arrayStart + arrayOpening.Length;
-
-                // Capture the literal
-                var arrayEnd = content.IndexOf(arrayClosure, cursor);
-                string arrayText = content[cursor..arrayEnd];
-                cursor = arrayEnd + arrayClosure.Length;
-
-                // Match with the name
-                int id = FindBlockId(name);
-
-                _blocks[id] = new OutputBlock(profile.OutputBlockLength, name, profile.BigEndian);
-                _blocks[id].FillFromText(SkipComments(arrayText));
+                _blocks[FindBlockId(block.Name)] = block;
             }
         }
 
@@ -157,42 +132,6 @@ namespace Zkwip.EPIC
                 res += _blocks[c].GenerateLiteral(disableProgmem);
 
             return res;
-        }
-
-        private static string SkipComments(string input)
-        {
-            input = input.ToLower();
-            var cursor = 0;
-
-            while (true)
-            {
-                if (cursor >= input.Length - 2)
-                    break;
-
-                if (input.Substring(cursor, 2) == "//")
-                {
-                    input = Slice(input, cursor, input.IndexOf("\n", cursor));
-                    continue;
-                }
-
-                if (input.Substring(cursor, 2) == "/*")
-                {
-                    input = Slice(input, cursor, input.IndexOf("*/", cursor));
-                    continue;
-                }
-
-                cursor++;
-            }
-
-            return input;
-        }
-
-        private static string Slice(string input, int firstCut, int secondCut)
-        {
-            if (secondCut < 0)
-                secondCut += input.Length;
-
-            return input[..firstCut] + input[secondCut..];
         }
     }
 }

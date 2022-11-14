@@ -52,7 +52,7 @@ public struct Profile
         return map;
     }
 
-    internal static int Difference(Rgb24 a, Rgb24 b) => Math.Abs(a.R - b.R) + Math.Abs(a.G - b.G) + Math.Abs(a.B - b.B);
+    private static int Difference(Rgb24 a, Rgb24 b) => Math.Abs(a.R - b.R) + Math.Abs(a.G - b.G) + Math.Abs(a.B - b.B);
 
     internal Rgb24 GetColorFromChannels(int x, int y, CodeFile file)
     {
@@ -67,7 +67,7 @@ public struct Profile
         throw new EpicSettingsException($"No matching palette color found with bits {DisplayBits(colorBits)}.");
     }
 
-    private static object DisplayBits(bool[] colorBits)
+    private static string DisplayBits(bool[] colorBits)
     {
         string s = "[ ";
 

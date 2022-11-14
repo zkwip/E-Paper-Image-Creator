@@ -48,7 +48,7 @@ namespace Zkwip.EPIC
             return text;
         }
 
-        internal void FillFromText(string text)
+        private void FillFromText(string text)
         {
             var cursor = 0;
             for (int i = 0; i < ByteCount; i++)

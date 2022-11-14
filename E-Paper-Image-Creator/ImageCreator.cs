@@ -16,7 +16,7 @@ namespace Zkwip.EPIC
                 var img = ReadImageFile(file, profile);
                 output ??= GenerateOutputFileName(file, ".h");
 
-                var code = new CodeFile(profile,img).BuildImageCode(disableProgmem);
+                var code = CodeFile.FromImage(profile,img).BuildImageCode(disableProgmem);
 
                 WriteOutputToFile(output, code, force);
 
@@ -104,7 +104,7 @@ namespace Zkwip.EPIC
         private static Image ExtractImageContent(string content, Profile profile)
         {
             var bitmap = new Image<Rgb24>(profile.Width, profile.Height);
-            var channels = new CodeFile(profile, content);
+            var channels = CodeFile.FromContent(profile, content);
 
             foreach (Point p in profile.Pixels())
             {

@@ -8,31 +8,38 @@ namespace Zkwip.EPIC
         private readonly Profile _profile;
         private readonly OutputBlock[] _blocks;
 
-        internal CodeFile(Profile profile, Image<Rgb24> img)
-        {
-            _blocks = new OutputBlock[profile.BlockNames.Length];
-            _profile = profile;
-
-            for (int i = 0; i < _profile.BlockNames.Length; i++)
-            {
-                _blocks[i] = new OutputBlock(_profile.OutputBlockLength, _profile.BlockNames[i], _profile.BigEndian);
-            }
-
-            foreach ((int x, int y) in _profile.Pixels())
-            {
-                var bits = _profile.GetClosestPaletteColor(img[x, y]);
-                SetBlockPixel(x, y, bits);
-            }
-        }
-
-        internal CodeFile(Profile profile, string content)
+        private CodeFile(Profile profile)
         {
             _profile = profile;
             _blocks = new OutputBlock[profile.BlockNames.Length];
-            ReadSourceContent(content);
         }
 
-        private void SetBlockPixel(int x, int y, bool[] bits)
+        internal static CodeFile FromImage(Profile profile, Image<Rgb24> img)
+        {
+            var cf = new CodeFile(profile);
+
+            for (int i = 0; i < profile.BlockNames.Length; i++)
+            {
+                cf._blocks[i] = new OutputBlock(profile.OutputBlockLength, profile.BlockNames[i], profile.BigEndian);
+            }
+
+            foreach ((int x, int y) in profile.Pixels())
+            {
+                var bits = profile.GetClosestPaletteColor(img[x, y]);
+                cf.SetBlockPixel(x, y, bits);
+            }
+
+            return cf;
+        }
+
+        internal static CodeFile FromContent(Profile profile, string content)
+        {
+            var cf = new CodeFile(profile);
+            cf.ReadSourceContent(content);
+            return cf;
+        }
+
+        internal void SetBlockPixel(int x, int y, bool[] bits)
         {
             int index = GetBlockIndex(x, y);
 

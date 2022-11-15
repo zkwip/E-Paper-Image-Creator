@@ -61,4 +61,4 @@
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
 
-E-Paper-Image-Creator/Examples/* linguist-vendored
+E-Paper-Image-Creator/Examples/** linguist-vendored

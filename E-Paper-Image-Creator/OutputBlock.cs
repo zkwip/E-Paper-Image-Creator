@@ -1,33 +1,32 @@
 ﻿using System;
-using System.Threading.Channels;
 
 namespace Zkwip.EPIC
 {
     internal class OutputBlock
     {
         private readonly byte[] _data;
-        private int _byteCount;
+        public int ByteCount { get; }
 
-        public OutputBlock(int bits, string name, bool msbFirst)
+        public bool BigEndian { get; }
+        public string Name { get; }
+
+        public OutputBlock(int byteCount, string name, bool bigEndian)
         {
             Name = name;
-            _byteCount = (bits - 1) / 8 + 1;
-            MsbFirst = msbFirst;
+            ByteCount = byteCount;
+            BigEndian = bigEndian;
 
-            _data = new byte[_byteCount];
+            _data = new byte[byteCount];
         }
 
-        public static OutputBlock FromText(ref int cursor, string content, int bits, bool msbFirst)
+        public static OutputBlock FromText(ref int cursor, string content, int blockLength, bool bigEndian)
         {
             string arrayText = ReadBlock(ref cursor, content, out string name);
-            var block = new OutputBlock(bits, name, msbFirst);
+            var block = new OutputBlock(blockLength, name, bigEndian);
 
             block.FillFromText(SkipComments(arrayText));
             return block;
         }
-
-        public bool MsbFirst { get; }
-        public string Name { get; }
 
         private static string ReadBlock(ref int cursor, string content, out string name)
         {
@@ -41,7 +40,7 @@ namespace Zkwip.EPIC
         {
             var end = content.IndexOf(handle, cursor);
             if (end == -1)
-                throw new ProfileMismatchException($"Failed to find the handle \"{handle}\" in array literal");
+                throw new ParseException($"Failed to find the handle \"{handle}\" in array literal");
 
             string text = content[cursor..end].Trim();
             cursor = end + handle.Length;
@@ -52,17 +51,17 @@ namespace Zkwip.EPIC
         private void FillFromText(string text)
         {
             var cursor = 0;
-            for (int i = 0; i < _byteCount; i++)
+            for (int i = 0; i < ByteCount; i++)
             {
                 cursor = text.IndexOf("0x", cursor);
 
                 if (cursor == -1)
-                    throw new Exception($"Channel {Name} has the wrong number of bytes: {i} instead of the expected {_byteCount}");
+                    throw new Exception($"Channel {Name} has the wrong number of bytes: {i} instead of the expected {ByteCount}");
 
                 cursor += 2;
 
                 if (cursor >= text.Length)
-                    throw new Exception($"Channel {Name} has the wrong number of bytes: End of array is reached at index {i} instead of {_byteCount}");
+                    throw new Exception($"Channel {Name} has the wrong number of bytes: End of array is reached at index {i} instead of {ByteCount}");
 
                 string code = text.Substring(cursor, 2);
 
@@ -76,7 +75,7 @@ namespace Zkwip.EPIC
         {
             string res = $"\nconst unsigned char {Name}[] {(disableProgmem ? "" : "PROGMEM ")}= {{\n";
 
-            for (int i = 0; i < _byteCount; i++)
+            for (int i = 0; i < ByteCount; i++)
             {
                 res += String.Format("0x{0:x2}, ", _data[i]);
 
@@ -109,7 +108,7 @@ namespace Zkwip.EPIC
         {
             var position = index % 8;
 
-            if (MsbFirst)
+            if (BigEndian)
                 position = 7 - position;
 
             byte bitmask = (byte)(1 << position);

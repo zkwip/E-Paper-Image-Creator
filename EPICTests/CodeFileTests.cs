@@ -8,51 +8,23 @@ namespace Zkwip.EPIC.Tests
         const string ExampleString = "const unsigned char IMAGE_RED[] PROGMEM = {0xC0}; const unsigned char IMAGE_BLACK[] PROGMEM = {0x30}; ";
         const string ExampleStringInterleaved = "const unsigned char IMAGE_DATA[] PROGMEM = {0xA5}; ";
 
-        private readonly CodeFile _sut;
-        private readonly CodeFile _sut_interleaved;
+        CodeFile _sut;
+        CodeFile _sut_interleaved;
 
         public CodeFileTests()
         {
-            _sut = new CodeFile(ProfileTests.SequentialProfile, ExampleString);
-            _sut_interleaved = new CodeFile(ProfileTests.InterleavedProfile, ExampleStringInterleaved);
+            _sut = CodeFile.FromContent(ProfileTests.SequentialProfile, ExampleString);
+            _sut_interleaved = CodeFile.FromContent(ProfileTests.InterleavedProfile, ExampleStringInterleaved);
         }
 
-
-        [Fact]
-        public void GetAllPixels_Should_GetAllPixels()
-        {
-            _sut.GetAllPixels().Should().HaveCount(4);
-            _sut_interleaved.GetAllPixels().Should().HaveCount(4);
-        }
-
-        [Fact]
-        public void GetAllPixels_Should_NotThrow()
-        {
-            var act = () => _sut.GetAllPixels();
-            var act2 = () => _sut_interleaved.GetAllPixels();
-
-            act.Should().NotThrow();
-            act2.Should().NotThrow();
-        }
-        [Theory]
-        [InlineData(0, new bool[] { true, false})]
-        [InlineData(1, new bool[] { true, false })]
-        [InlineData(2, new bool[] { false, true })]
-        [InlineData(3, new bool[] { false, true })]
-        public void GetPixelBits_Should_ReturnAllIndices(int i, bool[] expected)
-        {
-            var value = _sut.GetPixelBits(i);
-
-            value.Should().BeEquivalentTo(expected);
-        }
 
         [Fact]
         public void FromContent_Should_ReadCorrectly_Sequential()
         {
-            _sut.GetPixelBits(0).Should().BeEquivalentTo(new bool[] { true, false });
-            _sut.GetPixelBits(1).Should().BeEquivalentTo(new bool[] { true, false });
-            _sut.GetPixelBits(2).Should().BeEquivalentTo(new bool[] { false, true });
-            _sut.GetPixelBits(3).Should().BeEquivalentTo(new bool[] { false, true });
+            _sut.GetBlockPixel(0, 0).Should().BeEquivalentTo(new bool[] { true, false });
+            _sut.GetBlockPixel(0, 1).Should().BeEquivalentTo(new bool[] { true, false });
+            _sut.GetBlockPixel(1, 0).Should().BeEquivalentTo(new bool[] { false, true });
+            _sut.GetBlockPixel(1, 1).Should().BeEquivalentTo(new bool[] { false, true });
         }
 
         [Fact]
@@ -60,12 +32,12 @@ namespace Zkwip.EPIC.Tests
         {
             var text = _sut.BuildImageCode(false);
 
-            var newCodeFile = new CodeFile(ProfileTests.SequentialProfile, text);
+            var newCodeFile = CodeFile.FromContent(ProfileTests.SequentialProfile, text);
 
-            newCodeFile.GetPixelBits(0).Should().BeEquivalentTo(new bool[] { true, false });
-            newCodeFile.GetPixelBits(1).Should().BeEquivalentTo(new bool[] { true, false });
-            newCodeFile.GetPixelBits(2).Should().BeEquivalentTo(new bool[] { false, true });
-            newCodeFile.GetPixelBits(3).Should().BeEquivalentTo(new bool[] { false, true });
+            newCodeFile.GetBlockPixel(0, 0).Should().BeEquivalentTo(new bool[] { true, false });
+            newCodeFile.GetBlockPixel(0, 1).Should().BeEquivalentTo(new bool[] { true, false });
+            newCodeFile.GetBlockPixel(1, 0).Should().BeEquivalentTo(new bool[] { false, true });
+            newCodeFile.GetBlockPixel(1, 1).Should().BeEquivalentTo(new bool[] { false, true });
 
             newCodeFile.BuildImageCode(false).Should().BeEquivalentTo(text);
         }
@@ -73,10 +45,10 @@ namespace Zkwip.EPIC.Tests
         [Fact]
         public void FromContent_Should_ReadCorrectly_Interleaved()
         {
-            _sut_interleaved.GetPixelBits(0).Should().BeEquivalentTo(new bool[] { true, false });
-            _sut_interleaved.GetPixelBits(1).Should().BeEquivalentTo(new bool[] { true, false });
-            _sut_interleaved.GetPixelBits(2).Should().BeEquivalentTo(new bool[] { false, true });
-            _sut_interleaved.GetPixelBits(3).Should().BeEquivalentTo(new bool[] { false, true });
+            _sut_interleaved.GetBlockPixel(0, 0).Should().BeEquivalentTo(new bool[] { true, false });
+            _sut_interleaved.GetBlockPixel(0, 1).Should().BeEquivalentTo(new bool[] { true, false });
+            _sut_interleaved.GetBlockPixel(1, 0).Should().BeEquivalentTo(new bool[] { false, true });
+            _sut_interleaved.GetBlockPixel(1, 1).Should().BeEquivalentTo(new bool[] { false, true });
         }
 
         [Fact]
@@ -84,14 +56,32 @@ namespace Zkwip.EPIC.Tests
         {
             var text = _sut_interleaved.BuildImageCode(false);
 
-            var newCodeFile = new CodeFile(ProfileTests.InterleavedProfile, text);
+            var newCodeFile = CodeFile.FromContent(ProfileTests.InterleavedProfile, text);
 
-            newCodeFile.GetPixelBits(0).Should().BeEquivalentTo(new bool[] { true, false });
-            newCodeFile.GetPixelBits(1).Should().BeEquivalentTo(new bool[] { true, false });
-            newCodeFile.GetPixelBits(2).Should().BeEquivalentTo(new bool[] { false, true });
-            newCodeFile.GetPixelBits(3).Should().BeEquivalentTo(new bool[] { false, true });
+            newCodeFile.GetBlockPixel(0, 0).Should().BeEquivalentTo(new bool[] { true, false });
+            newCodeFile.GetBlockPixel(0, 1).Should().BeEquivalentTo(new bool[] { true, false });
+            newCodeFile.GetBlockPixel(1, 0).Should().BeEquivalentTo(new bool[] { false, true });
+            newCodeFile.GetBlockPixel(1, 1).Should().BeEquivalentTo(new bool[] { false, true });
 
             newCodeFile.BuildImageCode(false).Should().BeEquivalentTo(text);
+        }
+
+        [Fact]
+        public void SetBlockPixel_Should_SetTheBits()
+        {
+            _sut.SetBlockPixel(1, 0, new bool[] { false, false });
+            _sut_interleaved.SetBlockPixel(1, 0, new bool[] { false, false });
+
+            _sut.GetBlockPixel(1, 0).Should().BeEquivalentTo(new bool[] { false, false });
+            _sut_interleaved.GetBlockPixel(1, 0).Should().BeEquivalentTo(new bool[] { false, false });
+
+
+
+            _sut.SetBlockPixel(1, 0, new bool[] { true, true });
+            _sut_interleaved.SetBlockPixel(1, 0, new bool[] { true, true });
+
+            _sut.GetBlockPixel(1, 0).Should().BeEquivalentTo(new bool[] { true, true });
+            _sut_interleaved.GetBlockPixel(1, 0).Should().BeEquivalentTo(new bool[] { true, true });
         }
     }
 }

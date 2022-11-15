@@ -29,7 +29,7 @@ namespace Zkwip.EPIC.Tests
 
         public readonly static Profile InterleavedProfile = new()
         {
-            MsbFirst = true,
+            BigEndian = true,
             BlockNames = new[]
                 {
                     "IMAGE_DATA"
@@ -45,7 +45,7 @@ namespace Zkwip.EPIC.Tests
 
         public readonly static Profile SequentialProfile = new()
         {
-            MsbFirst = true,
+            BigEndian = true,
             BlockNames = new[]
                 {
                     "IMAGE_BLACK",
@@ -79,7 +79,7 @@ namespace Zkwip.EPIC.Tests
         [MemberData(nameof(Palette))]
         public void GetClosestPaletteColor_Should_MatchOnPaletteColors(Swatch s)
         {
-            var pixel = new Rgb24(s.R, s.G, s.B);
+            Rgb24 pixel = new Rgb24(s.R, s.G, s.B);
             SequentialProfile.GetClosestPaletteColor(pixel).Should().BeEquivalentTo(s.Bits);
         }
     }

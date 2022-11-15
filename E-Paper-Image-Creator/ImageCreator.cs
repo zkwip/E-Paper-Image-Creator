@@ -12,9 +12,9 @@ namespace Zkwip.EPIC
         {
             var profile = ReadProfile(profileName);
             var img = ReadImageFile(file, profile);
-            output ??= GenerateOutputFileName(file, ".cpp");
+            output ??= GenerateOutputFileName(file, ".h");
 
-            var code = new CodeFile(profile, profile.IteratePixels(img)).BuildImageCode(disableProgmem);
+            var code = CodeFile.FromImage(profile,img).BuildImageCode(disableProgmem);
 
             WriteOutputToFile(output, code, force);
         }
@@ -22,21 +22,18 @@ namespace Zkwip.EPIC
         public static void ValidateProfile(string profileName)
         {
             var profile = ReadProfile(profileName);
-
-            if (profile.Validate())
-                Console.WriteLine("Profile appears valid");
+            profile.Validate();
         }
 
         public static void Extract(string file, string? output, string? profileName, bool force)
         {
             var profile = ReadProfile(profileName);
-            string content = GetFileContents(file, "file");
-            output ??= GenerateOutputFileName(file, ".png");
+                string content = GetFileContents(file, "file");
+                output ??= GenerateOutputFileName(file, ".png");
 
-            var code = new CodeFile(profile, content);
-            var image = profile.Extract(code.GetAllPixels());
+                var image = ExtractImageContent(content, profile);
 
-            WriteImageToFile(output, image, force);
+                WriteImageToFile(output, image, force);
         }
 
         private static string GetFileContents(string file, string desc)
@@ -87,18 +84,21 @@ namespace Zkwip.EPIC
             var profileFile = $"Profiles/{profile}.json";
 
             var profileText = GetFileContents(profileFile, "profile");
-            try
+
+            return JsonConvert.DeserializeObject<Profile>(profileText);
+        }
+
+        private static Image ExtractImageContent(string content, Profile profile)
+        {
+            var bitmap = new Image<Rgb24>(profile.Width, profile.Height);
+            var channels = CodeFile.FromContent(profile, content);
+
+            foreach (Point p in profile.Pixels())
             {
-                return JsonConvert.DeserializeObject<Profile>(
-                    profileText, 
-                    new JsonSerializerSettings() { 
-                        MissingMemberHandling = MissingMemberHandling.Error
-                });
+                bitmap[p.X, p.Y] = profile.GetColorFromChannels(p.X, p.Y, channels);
             }
-            catch (JsonException ex)
-            {
-                throw new ProfileValidationException($"Failed to read profile: {ex.Message}", ex);
-            }
+
+            return bitmap;
         }
 
         private static string GenerateOutputFileName(string file, string extension)

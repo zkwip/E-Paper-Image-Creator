@@ -1,17 +1,13 @@
 {
   "width": 400,
   "height": 300,
-
-  "msbfirst": 1,
-  "groupsize": 1,
+  "bigendian": 1,
 
   "fliphorizontal": 0,
   "flipvertical": 0,
-  "rotate": 0,
 
   "channels": 2,
   "interleaved": 0,
-
   "blockNames": [
     "IMAGE_RED",
     "IMAGE_BLACK"

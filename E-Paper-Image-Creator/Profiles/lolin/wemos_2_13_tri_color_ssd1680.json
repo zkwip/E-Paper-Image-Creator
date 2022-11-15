@@ -1,17 +1,13 @@
 {
   "width": 112,
   "height": 250,
-
-  "msbfirst": 1,
-  "groupsize": 8,
+  "bigendian": 1,
 
   "fliphorizontal": 0,
   "flipvertical": 0,
-  "rotate": 0,
 
   "channels": 2,
   "interleaved": 0,
-
   "blockNames": [
     "gImage_red",
     "gImage_black"

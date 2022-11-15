@@ -4,33 +4,41 @@ namespace Zkwip.EPIC.Tests
 {
     public class OutputBlockTests
     {
-        // A 32 bit char[]
         const string ArrayLiteral = "const unsigned char henk[] = {0x01,0x00,0xFF,0x00};";
         private readonly OutputBlock _sut;
 
         public OutputBlockTests()
         {
             int cursor = 0;
-            _sut = OutputBlock.FromText(ref cursor, ArrayLiteral, 32, true);
+            _sut = OutputBlock.FromText(ref cursor, ArrayLiteral, 4, true);
         }
 
         [Fact]
-        public void OutputBlockFromTextTest_Should_ReadCorrectly()
+        public void BigEndianOutputBlockFromTextTest()
         {
-            _sut.Should().NotBeNull();
-            _sut.Name.Should().BeEquivalentTo("henk");
-            _sut.GetBit(0).Should().BeFalse();
-            _sut.GetBit(7).Should().BeTrue();
-            _sut.GetBit(31).Should().BeFalse();
-            
-            var cursor = 0;
-            var block2 = OutputBlock.FromText(ref cursor, ArrayLiteral, 32, false);
+            int cursor = 0;
 
-            block2.Should().NotBeNull();
-            block2.Name.Should().BeEquivalentTo("henk");
-            block2.GetBit(0).Should().BeTrue();
-            block2.GetBit(7).Should().BeFalse();
-            block2.GetBit(31).Should().BeFalse();
+            var block = OutputBlock.FromText(ref cursor, ArrayLiteral, 4, true);
+
+            block.Should().NotBeNull();
+            block.ByteCount.Should().Be(4);
+            block.Name.Should().BeEquivalentTo("henk");
+            block.GetBit(0).Should().BeFalse();
+            block.GetBit(7).Should().BeTrue();
+        }
+
+        [Fact]
+        public void LittleEndianOutputBlockFromTextTest()
+        {
+            int cursor = 0;
+
+            var block = OutputBlock.FromText(ref cursor, ArrayLiteral, 4, false);
+
+            block.Should().NotBeNull();
+            block.ByteCount.Should().Be(4);
+            block.Name.Should().BeEquivalentTo("henk");
+            block.GetBit(7).Should().BeFalse();
+            block.GetBit(0).Should().BeTrue();
         }
 
         [Theory]

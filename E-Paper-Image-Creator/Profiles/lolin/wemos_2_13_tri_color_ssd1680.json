@@ -1,9 +1,10 @@
 {
-  "width": 112,
-  "height": 250,
+  "width": 250,
+  "height": 128,
 
   "msbfirst": 1,
-  "groupsize": 8,
+  "groupx": 250,
+  "groupy": 128,
 
   "fliphorizontal": 0,
   "flipvertical": 0,

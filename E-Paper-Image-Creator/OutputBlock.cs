@@ -57,12 +57,12 @@ namespace Zkwip.EPIC
                 cursor = text.IndexOf("0x", cursor);
 
                 if (cursor == -1)
-                    throw new Exception($"Channel {Name} has the wrong number of bytes: {i} instead of the expected {_byteCount}");
+                    throw new Exception($"Array literal {Name} has the wrong number of bytes: {i} instead of the expected {_byteCount}");
 
                 cursor += 2;
 
                 if (cursor >= text.Length)
-                    throw new Exception($"Channel {Name} has the wrong number of bytes: End of array is reached at index {i} instead of {_byteCount}");
+                    throw new Exception($"Array literal {Name} has the wrong number of bytes: End of array is reached at index {i} instead of {_byteCount}");
 
                 string code = text.Substring(cursor, 2);
 
@@ -70,6 +70,9 @@ namespace Zkwip.EPIC
 
                 cursor += 2;
             }
+
+            if (text.IndexOf("0x", cursor) != -1)
+                throw new Exception($"Array literal {Name} has the wrong number of bytes: End of array has not been reached at index {_byteCount}");
         }
 
         internal string GenerateLiteral(bool disableProgmem, int perLine = 16)

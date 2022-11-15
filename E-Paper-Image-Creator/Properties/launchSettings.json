@@ -8,9 +8,17 @@
       "commandName": "Project",
       "commandLineArgs": "extract waveshare.cpp -O"
     },
-    "EPIC: Extract epd1.64inch (g)": {
+    "EPIC: Extract epd1in64g": {
       "commandName": "Project",
       "commandLineArgs": "extract Examples/waveshare/epd1in64g.cpp -Oo Extractions/waveshare/epd1in64g.png -p waveshare/epd1in64g"
+    },
+    "EPIC: Extract epd2in13": {
+      "commandName": "Project",
+      "commandLineArgs": "extract Examples/waveshare/epd2in13.cpp -Oo Extractions/waveshare/epd2in13.png -p waveshare/epd2in13"
+    },
+    "EPIC: Extract wemos_2_13_tri_color_ssd1680": {
+      "commandName": "Project",
+      "commandLineArgs": "extract Examples/lolin/wemos_2_13_tri_color_ssd1680.h -Oo Extractions/lolin/wemos_2_13_tri_color_ssd1680.png -p lolin/wemos_2_13_tri_color_ssd1680"
     }
   }
 }

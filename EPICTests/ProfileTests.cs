@@ -35,7 +35,8 @@ namespace Zkwip.EPIC.Tests
                     "IMAGE_DATA"
                 },
             Width = 2,
-            Height = 2,
+            Height = 2, 
+            GroupY = 1,
             Channels = 2,
             FlipHorizontal = false,
             FlipVertical = false,
@@ -53,6 +54,7 @@ namespace Zkwip.EPIC.Tests
                 },
             Width = 2,
             Height = 2,
+            GroupY = 1,
             Channels = 2,
             FlipHorizontal = false,
             FlipVertical = false,

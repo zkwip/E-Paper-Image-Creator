@@ -13,7 +13,8 @@ public struct Profile
     public int Height;
 
     public bool MsbFirst;
-    public int GroupSize;
+    public int GroupX;
+    public int GroupY;
 
     public bool FlipHorizontal;
     public bool FlipVertical;
@@ -28,11 +29,30 @@ public struct Profile
 
     internal IEnumerable<Point> Pixels()
     {
-        for (int y = 0; y < Height; y++)
+        int groups_x = Width / GroupX;
+        int groups_y = Height / GroupY;
+
+        for (int gx = 0; gx < groups_x; gx++)
         {
-            for (int x = 0; x < Width; x++)
+            var offset_x = gx * GroupX;
+
+            if (FlipHorizontal)
+                offset_x = GroupX * (groups_x - gx - 1);
+
+            for (int gy = 0; gy < groups_y; gy++)
             {
-                yield return new Point(x, y);
+                var offset_y = gy * GroupY;
+
+                if (FlipVertical)
+                    offset_y = GroupY * (groups_y - gy - 1);
+
+                for (int x = 0; x < GroupX; x++)
+                {
+                    for (int y = 0; y < GroupY; y++)
+                    {
+                        yield return new Point(x + offset_x, y + offset_y);
+                    }
+                }
             }
         }
     }

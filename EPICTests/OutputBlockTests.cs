@@ -4,13 +4,14 @@ namespace Zkwip.EPIC.Tests
 {
     public class OutputBlockTests
     {
+        // A 32 bit char[]
         const string ArrayLiteral = "const unsigned char henk[] = {0x01,0x00,0xFF,0x00};";
         private readonly OutputBlock _sut;
 
         public OutputBlockTests()
         {
             int cursor = 0;
-            _sut = OutputBlock.FromText(ref cursor, ArrayLiteral, 4, true);
+            _sut = OutputBlock.FromText(ref cursor, ArrayLiteral, 32, true);
         }
 
         [Fact]
@@ -18,13 +19,13 @@ namespace Zkwip.EPIC.Tests
         {
             int cursor = 0;
 
-            var block = OutputBlock.FromText(ref cursor, ArrayLiteral, 4, true);
+            var block = OutputBlock.FromText(ref cursor, ArrayLiteral, 32, true);
 
             block.Should().NotBeNull();
-            block.ByteCount.Should().Be(4);
             block.Name.Should().BeEquivalentTo("henk");
             block.GetBit(0).Should().BeFalse();
             block.GetBit(7).Should().BeTrue();
+            block.GetBit(31).Should().BeFalse();
         }
 
         [Fact]
@@ -32,13 +33,13 @@ namespace Zkwip.EPIC.Tests
         {
             int cursor = 0;
 
-            var block = OutputBlock.FromText(ref cursor, ArrayLiteral, 4, false);
+            var block = OutputBlock.FromText(ref cursor, ArrayLiteral, 32, false);
 
             block.Should().NotBeNull();
-            block.ByteCount.Should().Be(4);
             block.Name.Should().BeEquivalentTo("henk");
-            block.GetBit(7).Should().BeFalse();
             block.GetBit(0).Should().BeTrue();
+            block.GetBit(7).Should().BeFalse();
+            block.GetBit(31).Should().BeFalse();
         }
 
         [Theory]

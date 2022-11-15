@@ -15,22 +15,14 @@ namespace Zkwip.EPIC.Tests
         }
 
         [Fact]
-        public void BigEndianOutputBlockFromTextTest()
+        public void OutputBlockFromText_Should_ParseCorrectly()
         {
-            int cursor = 0;
+            _sut.Should().NotBeNull();
+            _sut.Name.Should().BeEquivalentTo("henk");
+            _sut.GetBit(0).Should().BeFalse();
+            _sut.GetBit(7).Should().BeTrue();
+            _sut.GetBit(31).Should().BeFalse();
 
-            var block = OutputBlock.FromText(ref cursor, ArrayLiteral, 32, true);
-
-            block.Should().NotBeNull();
-            block.Name.Should().BeEquivalentTo("henk");
-            block.GetBit(0).Should().BeFalse();
-            block.GetBit(7).Should().BeTrue();
-            block.GetBit(31).Should().BeFalse();
-        }
-
-        [Fact]
-        public void LittleEndianOutputBlockFromTextTest()
-        {
             int cursor = 0;
 
             var block = OutputBlock.FromText(ref cursor, ArrayLiteral, 32, false);
@@ -51,12 +43,14 @@ namespace Zkwip.EPIC.Tests
         [InlineData(8, false)]
         [InlineData(15, true)]
         [InlineData(15, false)]
-        public void SetBitShouldSetABit(int index, bool value)
+        public void SetBit_Should_SetBitsCorrectly(int index, bool value)
         {
             _sut.SetBit(index, value);
+
             _sut.GetBit(index).Should().Be(value);
 
             _sut.SetBit(index, !value);
+
             _sut.GetBit(index).Should().Be(!value);
         }
     }

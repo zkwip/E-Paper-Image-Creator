@@ -1,6 +1,6 @@
 {
-  "width": 400,
-  "height": 300,
+  "width": 122,
+  "height": 250,
 
   "msbfirst": 1,
   "groupsize": 1,
@@ -13,7 +13,7 @@
   "interleaved": 0,
 
   "blockNames": [
-    "IMAGE_BLACK"
+    "IMAGE_DATA"
   ],
   "palette": [
     {

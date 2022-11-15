@@ -1,109 +1,124 @@
-﻿using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Zkwip.EPIC
 {
     internal class CodeFile
     {
-        private readonly Profile _profile;
+        //private readonly Profile _profile;
         private readonly OutputBlock[] _blocks;
+
+        private readonly int _entries;
+        private readonly int _channels;
+        private readonly int _blockBits;
+
+        private readonly bool _interleaved;
+
+        private readonly string[] _blockNames; 
 
         private CodeFile(Profile profile)
         {
-            _profile = profile;
-            _blocks = new OutputBlock[profile.BlockNames.Length];
-        }
+            _channels = profile.Channels;
+            _entries = profile.Width * profile.Height;
 
-        internal static CodeFile FromImage(Profile profile, Image<Rgb24> img)
-        {
-            var cf = new CodeFile(profile);
+            _interleaved = profile.Interleaved;
+            _blockBits = _entries * (_interleaved ? _channels: 1);
 
-            for (int i = 0; i < profile.BlockNames.Length; i++)
+            _blockNames = profile.BlockNames;
+            _blocks = new OutputBlock[_blockNames.Length];
+
+            for (int i = 0; i < _blocks.Length; i++)
             {
-                cf._blocks[i] = new OutputBlock(profile.OutputBlockLength, profile.BlockNames[i], profile.BigEndian);
+                _blocks[i] = new OutputBlock(_blockBits, _blockNames[i], profile.MsbFirst);
             }
+        }
 
-            foreach ((int x, int y) in profile.Pixels())
+        internal CodeFile(Profile profile, IEnumerable<bool[]> pixels) : this(profile)
+        {
+            int j = 0;
+
+            foreach (var bits in pixels)
             {
-                var bits = profile.GetClosestPaletteColor(img[x, y]);
-                cf.SetBlockPixel(x, y, bits);
+                SetPixelBits(j, bits);
+                j++;
             }
-
-            return cf;
         }
 
-        internal static CodeFile FromContent(Profile profile, string content)
-        {
-            var cf = new CodeFile(profile);
-            cf.ReadSourceContent(content);
-            return cf;
-        }
-
-        internal void SetBlockPixel(int x, int y, bool[] bits)
-        {
-            int index = GetBlockIndex(x, y);
-
-            for (int c = 0; c < bits.Length; c++)
-                _blocks[_profile.Interleaved ? 0 : c].SetBit(index + (_profile.Interleaved ? c : 0), bits[c]);
-        }
-
-        internal bool[] GetBlockPixel(int x, int y)
-        {
-            int index = GetBlockIndex(x, y);
-
-            bool[] colorBits = new bool[_profile.Channels];
-
-            for (int c = 0; c < _profile.Channels; c++)
-                colorBits[c] = _blocks[(_profile.Interleaved ? 0 : c)].GetBit(index + (_profile.Interleaved ? c : 0));
-
-            return colorBits;
-        }
-
-        private int GetBlockIndex(int x, int y)
-        {
-            int pixel = x + _profile.Width * y;
-
-            if (_profile.Interleaved) 
-                return pixel * _profile.Channels;
-
-            return pixel;
-        }
-
-        private void ReadSourceContent(string content)
+        internal CodeFile(Profile profile, string content) : this(profile)
         {
             var cursor = 0;
-            foreach (string _ in _profile.BlockNames)
+            foreach (var _ in _blocks)
             {
-                var block = OutputBlock.FromText(ref cursor, content, _profile.OutputBlockLength, _profile.BigEndian);
+                var block = OutputBlock.FromText(ref cursor, content, _blockBits, profile.MsbFirst);
                 _blocks[FindBlockId(block.Name)] = block;
             }
         }
 
+        internal IEnumerable<bool[]> GetAllPixels()
+        {
+            for (int i = 0; i < _entries; i++)
+            {
+                yield return GetPixelBits(i);
+            }
+        }
+
+        private void SetPixelBits(int pixel, bool[] bits)
+        {
+            if (pixel >= _entries || pixel < 0)
+                throw new IndexOutOfRangeException("Pixel is outside the expected range");
+
+            for (int c = 0; c < bits.Length; c++)
+                _blocks[_interleaved ? 0 : c].SetBit(FindBitPosition(c, pixel), bits[c]);
+        }
+
+        internal bool[] GetPixelBits(int pixel)
+        {
+            if (pixel >= _entries || pixel < 0)
+                throw new IndexOutOfRangeException("Pixel is outside the expected range");
+
+            bool[] colorBits = new bool[_channels];
+
+            for (int c = 0; c < _channels; c++)
+                colorBits[c] = _blocks[_interleaved ? 0 : c].GetBit(FindBitPosition(c, pixel));
+
+            return colorBits;
+        }
+
+        private int FindBitPosition(int channel, int pixel)
+        {
+            if (_interleaved)
+                return (pixel * _channels) + channel;
+
+            return pixel;
+
+        }
+
         private int FindBlockId(string name)
         {
-            if (_profile.Interleaved) 
+            if (_interleaved) 
                 return 0;
 
             // Match by name
-            for (int c = 0; c < _profile.Channels; c++)
+            for (int c = 0; c < _channels; c++)
             {
-                if (name == _profile.BlockNames[c])
+                if (name == _blockNames[c])
                     return c;
             }
 
-            return 0;
+            throw new ProfileMismatchException($"Could not find array literal with name \"{name}\"");
         }
 
-        private string GenerateFileStart()
+        private static string GenerateFileStart()
         {
-            return $"// Image constants generated by EPIC\n// Size = {{w:{_profile.Width}, h:{_profile.Height}}}\n";
+            return $"// Image data converted by EPIC\n";
         }
 
         internal string BuildImageCode(bool disableProgmem)
         {
             string res = GenerateFileStart();
 
-            for (int c = 0; c < _profile.BlockNames.Length; c++)
+            for (int c = 0; c < _blocks.Length; c++)
                 res += _blocks[c].GenerateLiteral(disableProgmem);
 
             return res;

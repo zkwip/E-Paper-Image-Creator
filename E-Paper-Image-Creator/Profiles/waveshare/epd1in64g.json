@@ -1,13 +1,17 @@
 {
   "width": 168,
   "height": 168,
-  "bigendian": 1,
+
+  "msbfirst": 1,
+  "groupsize": 1,
 
   "fliphorizontal": 0,
   "flipvertical": 0,
+  "rotate": 0,
 
   "channels": 2,
   "interleaved": 1,
+
   "blockNames": [
     "IMAGE_DATA"
   ],
@@ -25,8 +29,8 @@
       "bits": [ 0, 1 ]
     },
     {
-      "r": 192,
-      "g": 192,
+      "r": 255,
+      "g": 255,
       "b": 0,
       "bits": [ 1, 0 ]
     },

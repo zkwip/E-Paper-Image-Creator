@@ -1,13 +1,17 @@
 {
   "width": 80,
   "height": 128,
-  "bigendian": 1,
+
+  "msbfirst": 1,
+  "groupsize": 1,
 
   "fliphorizontal": 0,
   "flipvertical": 0,
+  "rotate": 0,
 
   "channels": 1,
   "interleaved": 0,
+
   "blockNames": [
     "IMAGE_DATA"
   ],

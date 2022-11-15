@@ -3,7 +3,6 @@ using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Zkwip.EPIC;
 
@@ -12,19 +11,22 @@ public struct Profile
     // Alignment
     public int Width;
     public int Height;
-    public bool BigEndian;
+
+    public bool MsbFirst;
+    public int GroupSize;
 
     public bool FlipHorizontal;
     public bool FlipVertical;
 
     public int Channels;
     public bool Interleaved;
+    public int Rotate;
 
     // Color Management
     public string[] BlockNames;
     public Swatch[] Palette;
 
-    public IEnumerable<Point> Pixels()
+    internal IEnumerable<Point> Pixels()
     {
         for (int y = 0; y < Height; y++)
         {
@@ -33,6 +35,31 @@ public struct Profile
                 yield return new Point(x, y);
             }
         }
+    }
+
+    internal IEnumerable<bool[]> IteratePixels(Image<Rgb24> img)
+    {
+        foreach(var pixel in Pixels())
+        {
+            yield return GetClosestPaletteColor(img[pixel.X, pixel.Y]);
+        }
+    }
+
+    internal Image<Rgb24> Extract(IEnumerable<bool[]> pixels)
+    {
+        var bitmap = new Image<Rgb24>(Width, Height);
+
+        var enumerator = pixels.GetEnumerator();
+
+        foreach(var pixel in Pixels())
+        {
+            if (!enumerator.MoveNext())
+                throw new IndexOutOfRangeException("Pixel stream ended before traversing all pixels");
+
+            bitmap[pixel.X, pixel.Y] = GetColorFromChannels(enumerator.Current);
+        }
+
+        return bitmap;
     }
 
     internal bool[] GetClosestPaletteColor(Rgb24 pixel)
@@ -54,18 +81,16 @@ public struct Profile
     }
 
     private static int Difference(Rgb24 a, Rgb24 b) => Math.Abs(a.R - b.R) + Math.Abs(a.G - b.G) + Math.Abs(a.B - b.B);
-
-    internal Rgb24 GetColorFromChannels(int x, int y, CodeFile file)
-    {
-        var colorBits = file.GetBlockPixel(x, y);
-
+    
+    internal Rgb24 GetColorFromChannels(bool[] colorBits) 
+    { 
         foreach (Swatch s in Palette)
         {
             if (Enumerable.SequenceEqual(colorBits, s.Bits))
                 return s;
         }
 
-        throw new EpicSettingsException($"No matching palette color found with bits {DisplayBits(colorBits)}.");
+        throw new ProfileMismatchException($"No matching palette color found with bits {DisplayBits(colorBits)}.");
     }
 
     private static string DisplayBits(bool[] colorBits)
@@ -78,48 +103,38 @@ public struct Profile
         return s + "]";
     }
 
-    internal int OutputBlockLength
-    {
-        get
-        {
-            if (Interleaved)
-                return (Width * Height * Channels - 1) / 8 + 1;
-            return (Width * Height - 1) / 8 + 1;
-        }
-    }
-
     internal bool Validate()
     {
         if (Width <= 0)
-            throw new Exception("Width must be positive");
+            throw new ProfileValidationException("Width must be positive");
 
         if (Height <= 0)
-            throw new Exception("Height must be positive");
+            throw new ProfileValidationException("Height must be positive");
 
         if (Channels <= 0)
-            throw new Exception("Channels must be positive");
+            throw new ProfileValidationException("Channels must be positive");
 
         if (BlockNames.Length <= 0)
-            throw new Exception("BlockNames are missing");
+            throw new ProfileValidationException("BlockNames are missing");
 
         if (Palette.Length <= 0)
-            throw new Exception("The palette cannot be empty");
+            throw new ProfileValidationException("The palette cannot be empty");
 
         if (Interleaved && BlockNames.Length != 1)
-            throw new Exception("Interleaved profiles can only have one block name");
+            throw new ProfileValidationException("Interleaved profiles can only have one block name");
 
         if (!Interleaved && BlockNames.Length != Channels)
-            throw new Exception("Sequential profiles need to have exactly one block name per channel");
+            throw new ProfileValidationException("Sequential profiles need to have exactly one block name per channel");
 
         for(int i=0; i<BlockNames.Length;i++)
         {
             if (BlockNames[i].Contains(' '))
-                throw new Exception("BlockNames cannot contain spaces");
+                throw new ProfileValidationException("BlockNames cannot contain spaces");
 
             for (int j = 0; j < i; j++)
             {
                 if (BlockNames[i] == BlockNames[j])
-                    throw new Exception("BlockNames need to be unique");
+                    throw new ProfileValidationException("BlockNames need to be unique");
             }
         }
 
@@ -128,10 +143,10 @@ public struct Profile
             for (int j = 0; j < i; j++)
             {
                 if (Enumerable.SequenceEqual(Palette[i].Bits, Palette[j].Bits))
-                    throw new Exception($"Two bit values in the palette cannot be to be unique ({i}, {j})");
+                    throw new ProfileValidationException($"Two bit values in the palette cannot be to be unique ({i}, {j})");
 
                 if ((Rgb24)Palette[i] == (Rgb24)Palette[j])
-                    throw new Exception($"Two color values in the palette cannot be to be unique ({i}, {j})");
+                    throw new ProfileValidationException($"Two color values in the palette cannot be to be unique ({i}, {j})");
             }
         }
 

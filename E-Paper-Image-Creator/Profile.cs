@@ -29,26 +29,23 @@ public struct Profile
 
     internal IEnumerable<Point> Pixels()
     {
-        int groups_x = Width / GroupX;
-        int groups_y = Height / GroupY;
-
-        for (int gx = 0; gx < groups_x; gx++)
+        for (int gy = 0; gy < YGroups; gy++)
         {
-            var offset_x = gx * GroupX;
+            var offset_y = gy * GroupY;
 
-            if (FlipHorizontal)
-                offset_x = GroupX * (groups_x - gx - 1);
+            if (FlipVertical)
+                offset_y = GroupY * (YGroups - gy - 1);
 
-            for (int gy = 0; gy < groups_y; gy++)
+            for (int gx = 0; gx < XGroups; gx++)
             {
-                var offset_y = gy * GroupY;
+                var offset_x = gx * GroupX;
 
-                if (FlipVertical)
-                    offset_y = GroupY * (groups_y - gy - 1);
+                if (FlipHorizontal)
+                    offset_x = GroupX * (XGroups - gx - 1);
 
-                for (int x = 0; x < GroupX; x++)
+                for (int y = 0; y < GroupY; y++)
                 {
-                    for (int y = 0; y < GroupY; y++)
+                    for (int x = 0; x < GroupX; x++)
                     {
                         yield return new Point(x + offset_x, y + offset_y);
                     }
@@ -57,26 +54,40 @@ public struct Profile
         }
     }
 
+    private int XGroups => 1 + (Width - 1) / GroupX;
+    private int YGroups => 1 + (Height - 1) / GroupY;
+
+    internal int Entries => XGroups * YGroups * GroupX * GroupY;
+
     internal IEnumerable<bool[]> IteratePixels(Image<Rgb24> img)
     {
         foreach(var pixel in Pixels())
         {
-            yield return GetClosestPaletteColor(img[pixel.X, pixel.Y]);
+            if (InsideBounds(pixel))
+                yield return GetClosestPaletteColor(img[pixel.X, pixel.Y]);
+
+            yield return Palette[0].Bits;
         }
     }
 
-    internal Image<Rgb24> Extract(IEnumerable<bool[]> pixels)
+    private readonly bool InsideBounds(Point pixel)
+    {
+        return pixel.X >= 0 && pixel.Y >= 0 && pixel.X < Width && pixel.Y < Height;
+    }
+
+    internal Image<Rgb24> WriteToImage(IEnumerable<bool[]> data)
     {
         var bitmap = new Image<Rgb24>(Width, Height);
 
-        var enumerator = pixels.GetEnumerator();
+        var bitEnumerator = data.GetEnumerator();
 
         foreach(var pixel in Pixels())
         {
-            if (!enumerator.MoveNext())
+            if (!bitEnumerator.MoveNext())
                 throw new IndexOutOfRangeException("Pixel stream ended before traversing all pixels");
 
-            bitmap[pixel.X, pixel.Y] = GetColorFromChannels(enumerator.Current);
+            if (InsideBounds(pixel))
+                bitmap[pixel.X, pixel.Y] = GetColorFromChannels(bitEnumerator.Current);
         }
 
         return bitmap;
@@ -125,6 +136,12 @@ public struct Profile
 
     internal bool Validate()
     {
+        if (GroupX <= 0)
+            throw new ProfileValidationException("GroupX must be positive");
+
+        if (GroupY <= 0)
+            throw new ProfileValidationException("GroupY must be positive");
+
         if (Width <= 0)
             throw new ProfileValidationException("Width must be positive");
 

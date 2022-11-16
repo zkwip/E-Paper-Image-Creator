@@ -45,7 +45,7 @@ public class Program
         ) => RunSafe(() => ImageCreator.Extract(file, output, profile, force));
 
     private static void Validate(
-            [Argument("profile", Description = "The code file to get the image from")] string profile
+            [Argument("profile", Description = "The name of the profile to validate")] string profile
         ) => RunSafe(() => ImageCreator.ValidateProfile(profile));
 
 }

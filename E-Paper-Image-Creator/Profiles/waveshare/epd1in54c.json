@@ -3,7 +3,8 @@
   "height": 152,
 
   "msbfirst": 1,
-  "groupsize": 1,
+  "groupx": 1,
+  "groupy": 1,
 
   "fliphorizontal": 0,
   "flipvertical": 0,

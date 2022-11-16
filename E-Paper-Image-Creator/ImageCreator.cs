@@ -34,7 +34,7 @@ namespace Zkwip.EPIC
             output ??= GenerateOutputFileName(file, ".png");
 
             var code = new CodeFile(profile, content);
-            var image = profile.Extract(code.GetAllPixels());
+            var image = profile.WriteToImage(code.GetAllPixels());
 
             WriteImageToFile(output, image, force);
         }

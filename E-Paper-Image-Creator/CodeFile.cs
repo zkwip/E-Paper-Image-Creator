@@ -20,7 +20,7 @@ namespace Zkwip.EPIC
         private CodeFile(Profile profile)
         {
             _channels = profile.Channels;
-            _entries = profile.Width * profile.Height;
+            _entries = profile.Entries;
 
             _interleaved = profile.Interleaved;
             _blockBits = _entries * (_interleaved ? _channels: 1);

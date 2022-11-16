@@ -13,7 +13,8 @@ public struct Profile
     public int Height;
 
     public bool MsbFirst;
-    public int GroupSize;
+    public int GroupX;
+    public int GroupY;
 
     public bool FlipHorizontal;
     public bool FlipVertical;
@@ -28,35 +29,65 @@ public struct Profile
 
     internal IEnumerable<Point> Pixels()
     {
-        for (int y = 0; y < Height; y++)
+        for (int gy = 0; gy < YGroups; gy++)
         {
-            for (int x = 0; x < Width; x++)
+            var offset_y = gy * GroupY;
+
+            if (FlipVertical)
+                offset_y = GroupY * (YGroups - gy - 1);
+
+            for (int gx = 0; gx < XGroups; gx++)
             {
-                yield return new Point(x, y);
+                var offset_x = gx * GroupX;
+
+                if (FlipHorizontal)
+                    offset_x = GroupX * (XGroups - gx - 1);
+
+                for (int y = 0; y < GroupY; y++)
+                {
+                    for (int x = 0; x < GroupX; x++)
+                    {
+                        yield return new Point(x + offset_x, y + offset_y);
+                    }
+                }
             }
         }
     }
+
+    private int XGroups => 1 + (Width - 1) / GroupX;
+    private int YGroups => 1 + (Height - 1) / GroupY;
+
+    internal int Entries => XGroups * YGroups * GroupX * GroupY;
 
     internal IEnumerable<bool[]> IteratePixels(Image<Rgb24> img)
     {
         foreach(var pixel in Pixels())
         {
-            yield return GetClosestPaletteColor(img[pixel.X, pixel.Y]);
+            if (InsideBounds(pixel))
+                yield return GetClosestPaletteColor(img[pixel.X, pixel.Y]);
+
+            yield return Palette[0].Bits;
         }
     }
 
-    internal Image<Rgb24> Extract(IEnumerable<bool[]> pixels)
+    private readonly bool InsideBounds(Point pixel)
+    {
+        return pixel.X >= 0 && pixel.Y >= 0 && pixel.X < Width && pixel.Y < Height;
+    }
+
+    internal Image<Rgb24> WriteToImage(IEnumerable<bool[]> data)
     {
         var bitmap = new Image<Rgb24>(Width, Height);
 
-        var enumerator = pixels.GetEnumerator();
+        var bitEnumerator = data.GetEnumerator();
 
         foreach(var pixel in Pixels())
         {
-            if (!enumerator.MoveNext())
+            if (!bitEnumerator.MoveNext())
                 throw new IndexOutOfRangeException("Pixel stream ended before traversing all pixels");
 
-            bitmap[pixel.X, pixel.Y] = GetColorFromChannels(enumerator.Current);
+            if (InsideBounds(pixel))
+                bitmap[pixel.X, pixel.Y] = GetColorFromChannels(bitEnumerator.Current);
         }
 
         return bitmap;
@@ -105,6 +136,12 @@ public struct Profile
 
     internal bool Validate()
     {
+        if (GroupX <= 0)
+            throw new ProfileValidationException("GroupX must be positive");
+
+        if (GroupY <= 0)
+            throw new ProfileValidationException("GroupY must be positive");
+
         if (Width <= 0)
             throw new ProfileValidationException("Width must be positive");
 

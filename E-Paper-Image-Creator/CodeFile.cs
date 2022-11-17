@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace Zkwip.EPIC
 {
     internal class CodeFile
     {
-        //private readonly Profile _profile;
         private readonly OutputBlock[] _blocks;
 
         private readonly int _entries;
@@ -30,7 +28,7 @@ namespace Zkwip.EPIC
 
             for (int i = 0; i < _blocks.Length; i++)
             {
-                _blocks[i] = new OutputBlock(_blockBits, _blockNames[i], profile.MsbFirst);
+                _blocks[i] = new OutputBlock(_blockBits, _blockNames[i], profile.MsbFirst, profile.ExplicitSize);
             }
         }
 
@@ -50,7 +48,7 @@ namespace Zkwip.EPIC
             var cursor = 0;
             foreach (var _ in _blocks)
             {
-                var block = OutputBlock.FromText(ref cursor, content, _blockBits, profile.MsbFirst);
+                var block = OutputBlock.FromText(ref cursor, content, _blockBits, profile.MsbFirst, profile.ExplicitSize);
                 _blocks[FindBlockId(block.Name)] = block;
             }
         }

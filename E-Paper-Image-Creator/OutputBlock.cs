@@ -1,32 +1,34 @@
 ﻿using System;
-using System.Threading.Channels;
+using System.Text;
 
 namespace Zkwip.EPIC
 {
     internal class OutputBlock
     {
         private readonly byte[] _data;
-        private int _byteCount;
+        private readonly int _byteCount;
+        private readonly bool _msbFirst;
+        private readonly bool _explicitSize;
 
-        public OutputBlock(int bits, string name, bool msbFirst)
+        public OutputBlock(int bits, string name, bool msbFirst, bool explicitByteCount)
         {
             Name = name;
             _byteCount = (bits - 1) / 8 + 1;
-            MsbFirst = msbFirst;
+            _msbFirst = msbFirst;
 
             _data = new byte[_byteCount];
+            _explicitSize = explicitByteCount;
         }
 
-        public static OutputBlock FromText(ref int cursor, string content, int bits, bool msbFirst)
+        public static OutputBlock FromText(ref int cursor, string content, int bits, bool msbFirst, bool explicitByteCount)
         {
             string arrayText = ReadBlock(ref cursor, content, out string name);
-            var block = new OutputBlock(bits, name, msbFirst);
+            var block = new OutputBlock(bits, name, msbFirst, explicitByteCount);
 
             block.FillFromText(SkipComments(arrayText));
             return block;
         }
 
-        public bool MsbFirst { get; }
         public string Name { get; }
 
         private static string ReadBlock(ref int cursor, string content, out string name)
@@ -77,17 +79,25 @@ namespace Zkwip.EPIC
 
         internal string GenerateLiteral(bool disableProgmem, int perLine = 16)
         {
-            string res = $"\nconst unsigned char {Name}[] {(disableProgmem ? "" : "PROGMEM ")}= {{\n";
+            var builder = new StringBuilder();
+            BuildLiteralString(disableProgmem,builder,perLine);
+            return builder.ToString();
+        }
+
+        internal void BuildLiteralString(bool disableProgmem, StringBuilder builder, int perLine = 16)
+        { 
+            string bcs = _explicitSize ? _byteCount.ToString() : "";
+            builder.AppendLine($"\nconst unsigned char {Name}[{bcs}] {(disableProgmem ? "" : "PROGMEM ")}= {{");
 
             for (int i = 0; i < _byteCount; i++)
             {
-                res += String.Format("0x{0:x2}, ", _data[i]);
+                builder.Append(String.Format("0x{0:x2}, ", _data[i]));
 
                 if (i % perLine == perLine - 1)
-                    res += "\n";
+                    builder.AppendLine();
             }
 
-            return res + "};\n";
+            builder.AppendLine("};");
         }
 
         internal bool GetBit(int pos)
@@ -112,7 +122,7 @@ namespace Zkwip.EPIC
         {
             var position = index % 8;
 
-            if (MsbFirst)
+            if (_msbFirst)
                 position = 7 - position;
 
             byte bitmask = (byte)(1 << position);

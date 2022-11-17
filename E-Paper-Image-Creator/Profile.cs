@@ -1,4 +1,5 @@
-﻿using SixLabors.ImageSharp;
+﻿using Newtonsoft.Json;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
@@ -8,20 +9,33 @@ namespace Zkwip.EPIC;
 
 public struct Profile
 {
+
     // Alignment
+    [JsonRequired]
     public int Width;
+    [JsonRequired]
     public int Height;
 
-    public bool MsbFirst;
+    [JsonRequired]
     public int GroupX;
+    [JsonRequired]
     public int GroupY;
 
+    [JsonRequired]
+    public int Rotate;
+    [JsonRequired]
     public bool FlipHorizontal;
+    [JsonRequired]
     public bool FlipVertical;
+    [JsonRequired]
 
     public int Channels;
+    [JsonRequired]
+    public bool ExplicitSize;
+    [JsonRequired]
+    public bool MsbFirst;
+    [JsonRequired]
     public bool Interleaved;
-    public int Rotate;
 
     // Color Management
     public string[] BlockNames;
@@ -70,7 +84,7 @@ public struct Profile
         }
     }
 
-    private readonly bool InsideBounds(Point pixel)
+    private bool InsideBounds(Point pixel)
     {
         return pixel.X >= 0 && pixel.Y >= 0 && pixel.X < Width && pixel.Y < Height;
     }

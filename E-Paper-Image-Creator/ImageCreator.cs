@@ -8,9 +8,9 @@ namespace Zkwip.EPIC
 {
     internal static class ImageCreator
     {
-        public static void BuildImage(string file, string? output, string? profileName, bool force, bool disableProgmem)
+        public static void BuildImage(string file, string? output, string? profileName, bool force, bool disableProgmem, int rotate, bool flipx, bool flipy)
         {
-            var profile = ReadProfile(profileName);
+            var profile = ReadProfile(profileName, rotate, flipx, flipy);
             var img = ReadImageFile(file, profile);
             output ??= GenerateOutputFileName(file, ".cpp");
 
@@ -27,9 +27,9 @@ namespace Zkwip.EPIC
                 Console.WriteLine("Profile appears valid");
         }
 
-        public static void Extract(string file, string? output, string? profileName, bool force)
+        public static void Extract(string file, string? output, string? profileName, bool force, int rotate = 0, bool flipx = false, bool flipy = false)
         {
-            var profile = ReadProfile(profileName);
+            var profile = ReadProfile(profileName, rotate, flipx, flipy );
             string content = GetFileContents(file, "file");
             output ??= GenerateOutputFileName(file, ".png");
 
@@ -81,19 +81,24 @@ namespace Zkwip.EPIC
             return img;
         }
 
-        private static Profile ReadProfile(string? profile)
+        private static Profile ReadProfile(string? profileName, int rotate = 0, bool flipx = false, bool flipy = false)
         {
-            profile ??= "kwr_400_300";
-            var profileFile = $"Profiles/{profile}.json";
+            profileName ??= "kwr_400_300";
+            var profileFile = $"Profiles/{profileName}.json";
 
             var profileText = GetFileContents(profileFile, "profile");
             try
             {
-                return JsonConvert.DeserializeObject<Profile>(
+                var profile = JsonConvert.DeserializeObject<Profile>(
                     profileText, 
                     new JsonSerializerSettings() { 
                         MissingMemberHandling = MissingMemberHandling.Error
                 });
+
+                profile.Rotate += rotate;
+                profile.FlipHorizontal ^= flipx;
+                profile.FlipVertical ^= flipy;
+                return profile;
             }
             catch (JsonException ex)
             {

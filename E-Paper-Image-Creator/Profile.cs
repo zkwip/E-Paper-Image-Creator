@@ -41,31 +41,52 @@ public struct Profile
     public string[] BlockNames;
     public Swatch[] Palette;
 
-    internal IEnumerable<Point> Pixels()
+    internal IEnumerable<Point> ImagePixels()
     {
+        NormalizeRotation();
         for (int gy = 0; gy < YGroups; gy++)
         {
             var offset_y = gy * GroupY;
 
-            if (FlipVertical)
-                offset_y = GroupY * (YGroups - gy - 1);
+            // if (FlipVertical)
+            //     offset_y = GroupY * (YGroups - gy - 1);
 
             for (int gx = 0; gx < XGroups; gx++)
             {
                 var offset_x = gx * GroupX;
 
-                if (FlipHorizontal)
-                    offset_x = GroupX * (XGroups - gx - 1);
+                // if (FlipHorizontal)
+                //     offset_x = GroupX * (XGroups - gx - 1);
 
                 for (int y = 0; y < GroupY; y++)
                 {
                     for (int x = 0; x < GroupX; x++)
                     {
-                        yield return new Point(x + offset_x, y + offset_y);
+                        yield return MapToImageSpace(x + offset_x, y + offset_y);
                     }
                 }
             }
         }
+    }
+
+    private Point MapToImageSpace(int x, int y)
+    {
+        if (Rotate < 0 || Rotate >= 4)
+            throw new ProfileValidationException("Rotation value out of range");
+
+        bool rotFlipX = Rotate == 2 || Rotate == 3;
+        bool rotFlipY = Rotate == 1 || Rotate == 2;
+
+        if (FlipHorizontal ^ rotFlipX)
+            x = Width - 1 - x;
+
+        if (FlipVertical ^ rotFlipY)
+            y = Height - 1 - y;
+
+        if (Rotate % 2 != 0)
+            return new Point(y, x);
+
+        return new Point(x, y);
     }
 
     private int XGroups => 1 + (Width - 1) / GroupX;
@@ -75,10 +96,10 @@ public struct Profile
 
     internal IEnumerable<bool[]> IteratePixels(Image<Rgb24> img)
     {
-        foreach(var pixel in Pixels())
+        foreach(var imagePixel in ImagePixels())
         {
-            if (InsideBounds(pixel))
-                yield return GetClosestPaletteColor(img[pixel.X, pixel.Y]);
+            if (InsideBounds(imagePixel))
+                yield return GetClosestPaletteColor(img[imagePixel.X, imagePixel.Y]);
 
             yield return Palette[0].Bits;
         }
@@ -86,25 +107,42 @@ public struct Profile
 
     private bool InsideBounds(Point pixel)
     {
-        return pixel.X >= 0 && pixel.Y >= 0 && pixel.X < Width && pixel.Y < Height;
+        if (Rotate % 2 == 0)
+            return pixel.X >= 0 && pixel.Y >= 0 && pixel.X < Width && pixel.Y < Height;
+
+        return pixel.X >= 0 && pixel.Y >= 0 && pixel.X < Height && pixel.Y < Width;
     }
 
     internal Image<Rgb24> WriteToImage(IEnumerable<bool[]> data)
     {
-        var bitmap = new Image<Rgb24>(Width, Height);
+        var bitmap = CreateEmptyBitmap();
 
         var bitEnumerator = data.GetEnumerator();
 
-        foreach(var pixel in Pixels())
+        foreach (var imagePixel in ImagePixels())
         {
             if (!bitEnumerator.MoveNext())
                 throw new IndexOutOfRangeException("Pixel stream ended before traversing all pixels");
 
-            if (InsideBounds(pixel))
-                bitmap[pixel.X, pixel.Y] = GetColorFromChannels(bitEnumerator.Current);
+            if (InsideBounds(imagePixel))
+                bitmap[imagePixel.X, imagePixel.Y] = GetColorFromChannels(bitEnumerator.Current);
         }
 
         return bitmap;
+    }
+
+    private Image<Rgb24> CreateEmptyBitmap()
+    {
+        NormalizeRotation();
+        if (Rotate % 2 == 0)
+            return new Image<Rgb24>(Width, Height);
+        
+        return new Image<Rgb24>(Height, Width);
+    }
+
+    private void NormalizeRotation()
+    {
+        Rotate = (Rotate + 8) % 4;
     }
 
     internal bool[] GetClosestPaletteColor(Rgb24 pixel)
@@ -161,6 +199,9 @@ public struct Profile
 
         if (Height <= 0)
             throw new ProfileValidationException("Height must be positive");
+
+        if (Rotate <= -4 || Rotate >= 4)
+            throw new ProfileValidationException("Rotation must be between -4 and 4");
 
         if (Channels <= 0)
             throw new ProfileValidationException("Channels must be positive");

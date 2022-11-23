@@ -40,7 +40,7 @@ namespace Zkwip.EPIC.Tests
         [MemberData(nameof(Examples))]
         public void AllExample_Should_BeExtractable(string profile, string file) 
         {
-            Action act = () => ImageCreator.Extract(file, $"Extractions\\{profile}.png", profile, true);
+            Action act = () => ImageCreator.Extract(file, $"Extractions\\{profile}.png", profile, true, 0);
 
             act.Should().NotThrow();
         }

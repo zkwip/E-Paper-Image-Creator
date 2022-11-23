@@ -36,6 +36,7 @@ namespace Zkwip.EPIC.Tests
                 },
             Width = 2,
             Height = 2,
+            Rotate = 0,
             GroupX = 2,
             GroupY = 2,
             Channels = 2,
@@ -55,6 +56,7 @@ namespace Zkwip.EPIC.Tests
                 },
             Width = 2,
             Height = 2,
+            Rotate = 0,
             GroupX = 2,
             GroupY = 2,
             Channels = 2,
@@ -73,10 +75,10 @@ namespace Zkwip.EPIC.Tests
         [Fact]
         public void Pixels_Should_ReturnAllPixelsInOrder()
         {
-            SequentialProfile.Pixels().Should().HaveElementAt(0, new Point(0, 0));
-            SequentialProfile.Pixels().Should().HaveElementAt(1, new Point(1, 0));
-            SequentialProfile.Pixels().Should().HaveElementAt(2, new Point(0, 1));
-            SequentialProfile.Pixels().Should().HaveElementAt(3, new Point(1, 1));
+            SequentialProfile.ImagePixels().Should().HaveElementAt(0, new Point(0, 0));
+            SequentialProfile.ImagePixels().Should().HaveElementAt(1, new Point(1, 0));
+            SequentialProfile.ImagePixels().Should().HaveElementAt(2, new Point(0, 1));
+            SequentialProfile.ImagePixels().Should().HaveElementAt(3, new Point(1, 1));
         }
 
         [Theory]

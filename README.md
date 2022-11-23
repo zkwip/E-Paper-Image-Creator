@@ -37,20 +37,73 @@ The following devices already have profiles:
 ### Waveshare
  - `waveshare/epd1in02d` - 1.02 Inch 128x80  B/W
  
- - `waveshare/epd1in53` - 1.54 Inch 200x200  B/W
- - `waveshare/epd1in53b` - 1.54 Inch 200x200  R/B/W
- - `waveshare/epd1in53c` - 1.54 Inch 152x152  R/B/W
+ - `waveshare/epd1in54` - 1.54 Inch 200x200  B/W
+ - `waveshare/epd1in54b` - 1.54 Inch 200x200  R/B/W
+ - `waveshare/epd1in54c` - 1.54 Inch 152x152  R/B/W
  
  - `waveshare/epd1in64g` - 1.64 Inch 168x168  R/Y/B/W
 
- - `waveshare/epd2in13` - 2.13 Inch 122x250  R/B/W
+ - `waveshare/epd2in13` - 2.13 Inch 250x122  B/W
+ - `waveshare/epd2in13_v3` - 2.13 Inch 250x122  B/W
+ - `waveshare/epd2in13b` - 2.13 Inch 250x122  R/B/W
+ - `waveshare/epd2in13b_v4` - 2.13 Inch 250x122  R/B/W
+ - `waveshare/epd2in13b_v3` - 2.13 Inch 250x122  R/B/W
+ - `waveshare/epd2in13c` - 2.13 Inch 250x122  Y/B/W
+ - `waveshare/epd2in13d` - 2.13 Inch 212x104  B/W
+
+ - `waveshare/epd2in36g` - 2.36 Inch 296x168  R/Y/B/W
+
+ - `waveshare/epd2in66` - 2.66 Inch 296x168  B/W
+ - `waveshare/epd2in66b` - 2.66 Inch 296x168  R/B/W
+
+ - `waveshare/epd2in7` - 2.7 Inch 264x176  B/W
+ - `waveshare/epd2in7_v2` - 2.7 Inch 264x176  B/W
+ - `waveshare/epd2in7b` - 2.7 Inch 264x176  R/B/W
+ - `waveshare/epd2in7b_v2` - 2.7 Inch 264x176  R/B/W
+
+ - `waveshare/epd2in9` - 2.9 Inch 296x128  B/W
+ - `waveshare/epd2in9_v2` - 2.9 Inch 296x128  B/W
+ - `waveshare/epd2in9b` - 2.9 Inch 296x128  R/B/W
+ - `waveshare/epd2in9b_v3` - 2.9 Inch 296x128  R/B/W
+ - `waveshare/epd2in9c` - 2.9 Inch 296x128  Y/B/W
+ - `waveshare/epd2in9d` - 2.9 Inch 296x128  B/W
  
+ - `waveshare/epd3in0g` - 3.0 Inch 400x168  R/Y/B/W
+
+ - `waveshare/epd3in52` - 3.52 Inch 360x240  B/W
+
+ - `waveshare/epd3in7` - 3.7 Inch 480x280  B/W
+  
+ - `waveshare/epd4in01f` - 4.01 Inch 640x400  7-color
+
  - `waveshare/epd4in2` - 4.2 Inch 400x300  B/W
  - `waveshare/epd4in2b` - 4.2 Inch 400x300  R/B/W
+ - `waveshare/epd4in2b_v2` - 4.2 Inch 400x300  R/B/W
+ - `waveshare/epd4in2c` - 4.2 Inch 400x300  Y/B/W
+
+ - `waveshare/epd4in37g` - 4.37 Inch 512x368  R/Y/B/W
+
+ - `waveshare/epd5in65f` - 5.65 Inch 600x448 7-color
+
+ - `waveshare/epd5in83` - 5.83 Inch 648x480  B/W
+ - `waveshare/epd5in83_v2` - 5.83 Inch 648x480  B/W
+ - `waveshare/epd5in83b` - 5.83 Inch 648x480  R/B/W
+ - `waveshare/epd5in83b_v2` - 5.83 Inch 648x480  R/B/W
+ - `waveshare/epd5in83c` - 5.83 Inch 648x480  Y/B/W
+ 
+ - `waveshare/epd7in3f` - 7.3 Inch 800x480  7-color
+ - `waveshare/epd7in3g` - 7.3 Inch 800x480  R/Y/B/W
+
+ - `waveshare/epd7in5` - 7.5 Inch 800x480  B/W
+ - `waveshare/epd7in5_v2` - 7.5 Inch 800x480  B/W
+ - `waveshare/epd7in5b` - 7.5 Inch 800x480  R/B/W
+ - `waveshare/epd7in5b_v2` - 7.5 Inch 800x480  R/B/W
+ - `waveshare/epd7in5c` - 7.5 Inch 640x384  Y/B/W
+ - `waveshare/epd7in5_hd` - 7.5 Inch 880x528  B/W
+ - `waveshare/epd7in5b_hd` - 7.5 Inch 880x528  R/B/W
 
 ## Custom Profiles
 It's usually fastest to start off with a profile of a device that is very similar. Often screens are sold under multiple names and even more often they share the same type of drivers. Once you have picked a profile, copy it and modify its parameters until it looks right. A good way to do this is to take an example project from the manufacturer's website and see what image you get when you use the `extract` command. If you want to be extra sure, you can also use the following command to run some tests to see if the profile `manufacturer/myepd` makes sense:
 
     EPIC validate manufacturer/myepd
-
 

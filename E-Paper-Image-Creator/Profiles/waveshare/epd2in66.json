@@ -1,6 +1,6 @@
 {
-  "width": 400,
-  "height": 300,
+  "width": 152,
+  "height": 296,
 
   "msbfirst": 1,
   "groupx": 1,
@@ -8,14 +8,14 @@
 
   "fliphorizontal": 0,
   "flipvertical": 0,
-  "rotate": 0,
+  "rotate": 1,
 
   "channels": 1,
   "interleaved": 0,
-  "explicitsize": 0,
+  "explicitsize": 5630,
 
   "blockNames": [
-    "IMAGE_BUTTERFLY"
+    "IMAGE_DATA"
   ],
   "palette": [
     {

@@ -1,6 +1,6 @@
 {
-  "width": 104,
-  "height": 212,
+  "width": 152,
+  "height": 296,
 
   "msbfirst": 1,
   "groupx": 1,
@@ -12,11 +12,11 @@
 
   "channels": 2,
   "interleaved": 0,
-  "explicitsize": 2756,
+  "explicitsize": 5630,
 
   "blockNames": [
-    "gImage_red",
-    "gImage_black"
+    "gImage_2in66br",
+    "gImage_2in66bb"
   ],
   "palette": [
     {
@@ -36,6 +36,12 @@
       "g": 0,
       "b": 0,
       "bits": [ 1, 0 ]
+    },
+    {
+      "r": 255,
+      "g": 1,
+      "b": 0,
+      "bits": [ 0, 0 ]
     }
   ]
 }

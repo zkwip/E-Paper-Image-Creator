@@ -11,7 +11,7 @@ namespace Zkwip.EPIC.Tests
         public OutputBlockTests()
         {
             int cursor = 0;
-            _sut = OutputBlock.FromText(ref cursor, ArrayLiteral, 32, true, false);
+            _sut = OutputBlock.FromText(ref cursor, ArrayLiteral, 32, true, 0);
         }
 
         [Fact]
@@ -25,7 +25,7 @@ namespace Zkwip.EPIC.Tests
 
             int cursor = 0;
 
-            var block = OutputBlock.FromText(ref cursor, ArrayLiteral, 32, false, false);
+            var block = OutputBlock.FromText(ref cursor, ArrayLiteral, 32, false, 0);
 
             block.Should().NotBeNull();
             block.Name.Should().BeEquivalentTo("henk");

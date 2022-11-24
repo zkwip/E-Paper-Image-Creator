@@ -45,11 +45,31 @@ namespace Zkwip.EPIC
 
         internal CodeFile(Profile profile, string content) : this(profile)
         {
+            var left = _blocks.Length;
             var cursor = 0;
-            foreach (var _ in _blocks)
+
+            try
             {
-                var block = OutputBlock.FromText(ref cursor, content, _blockBits, profile.MsbFirst, profile.ExplicitSize);
-                _blocks[FindBlockId(block.Name)] = block;
+                while (left > 0)
+                {
+                    var block = OutputBlock.FromText(ref cursor, content, _blockBits, profile.MsbFirst, profile.ExplicitSize);
+                    int id = FindBlockId(block.Name);
+
+                    if (id != -1)
+                    {
+                        _blocks[id] = block;
+                        left--;
+                    }
+                }
+            }
+            catch (FileReaderException)
+            {
+                for(int i=0;i<_blocks.Length;i++)
+                {
+                    if (_blocks[i] is null)
+                        throw new ProfileMismatchException($"Literal {_blockNames[i]}was not found in teh code file.");
+
+                }
             }
         }
 
@@ -94,8 +114,8 @@ namespace Zkwip.EPIC
 
         private int FindBlockId(string name)
         {
-            if (_interleaved) 
-                return 0;
+            //if (_interleaved) 
+            //    return 0;
 
             // Match by name
             for (int c = 0; c < _channels; c++)
@@ -104,7 +124,7 @@ namespace Zkwip.EPIC
                     return c;
             }
 
-            throw new ProfileMismatchException($"Could not find array literal with name \"{name}\"");
+            return -1;
         }
 
         private static string GenerateFileStart()

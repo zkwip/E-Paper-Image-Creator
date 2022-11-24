@@ -68,14 +68,14 @@ namespace Zkwip.EPIC
         private static Image<Rgb24> ReadImageFile(string file, Profile profile)
         {
             if (!File.Exists(file))
-                throw new EpicSettingsException("The provided file does not exist");
+                throw new EpicSettingsException($"The provided image file \"{file}\" does not exist");
 
             var img = Image.Load<Rgb24>(file);
 
             if (img.Size().IsEmpty)
                 throw new EpicSettingsException("The provided file is not an image file");
 
-            if (img.Width < profile.Width || img.Height < profile.Height)
+            if (img.Width < profile.ImageWidth || img.Height < profile.ImageHeight)
                 throw new EpicSettingsException("The image is smaller than the target");
 
             return img;

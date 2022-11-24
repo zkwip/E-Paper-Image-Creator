@@ -45,16 +45,16 @@ The following devices already have profiles:
 
  - `waveshare/epd2in13` - 2.13 Inch 250x122  B/W
  - `waveshare/epd2in13_v3` - 2.13 Inch 250x122  B/W
- - `waveshare/epd2in13b` - 2.13 Inch 250x122  R/B/W
+ - `waveshare/epd2in13b` - 2.13 Inch 212x104  R/B/W
+ - `waveshare/epd2in13b_v3` - 2.13 Inch 212x104  R/B/W
  - `waveshare/epd2in13b_v4` - 2.13 Inch 250x122  R/B/W
- - `waveshare/epd2in13b_v3` - 2.13 Inch 250x122  R/B/W
- - `waveshare/epd2in13c` - 2.13 Inch 250x122  Y/B/W
+ - `waveshare/epd2in13c` - 2.13 Inch 212x104  Y/B/W
  - `waveshare/epd2in13d` - 2.13 Inch 212x104  B/W
 
- - `waveshare/epd2in36g` - 2.36 Inch 296x168  R/Y/B/W
+ - `waveshare/epd2in36g` - 2.36 Inch 168x168  R/Y/B/W
 
- - `waveshare/epd2in66` - 2.66 Inch 296x168  B/W
- - `waveshare/epd2in66b` - 2.66 Inch 296x168  R/B/W
+ - `waveshare/epd2in66` - 2.66 Inch 296x152  B/W
+ - `waveshare/epd2in66b` - 2.66 Inch 296x152  R/B/W
 
  - `waveshare/epd2in7` - 2.7 Inch 264x176  B/W
  - `waveshare/epd2in7_v2` - 2.7 Inch 264x176  B/W

@@ -1,22 +1,21 @@
 {
-  "width": 122,
-  "height": 250,
+  "width": 168,
+  "height": 168,
 
   "msbfirst": 1,
-  "groupx": 128,
+  "groupx": 1,
   "groupy": 1,
 
   "fliphorizontal": 0,
-  "flipvertical": 1,
-  "rotate": 1,
+  "flipvertical": 0,
+  "rotate": 0,
 
   "channels": 2,
-  "interleaved": 0,
-  "explicitsize": 4000,
+  "interleaved": 1,
+  "explicitsize": 7056,
 
   "blockNames": [
-    "gImage_red",
-    "gImage_black"
+    "Image4color"
   ],
   "palette": [
     {
@@ -33,10 +32,15 @@
     },
     {
       "r": 255,
+      "g": 255,
+      "b": 0,
+      "bits": [ 1, 0 ]
+    },
+    {
+      "r": 255,
       "g": 0,
       "b": 0,
       "bits": [ 1, 1 ]
     }
-
   ]
 }

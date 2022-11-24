@@ -209,6 +209,9 @@
     <None Update="Profiles\seeed\grove_triple_1_54.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Profiles\waveshare\epd3in0g.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Profiles\waveshare\epd2in66b.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -276,6 +279,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Profiles\waveshare\epd2in9.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Profiles\waveshare\epd3in52.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Profiles\waveshare\epd3in7.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Profiles\waveshare\epd4in01f.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Profiles\waveshare\epd4in2b_v2.json">

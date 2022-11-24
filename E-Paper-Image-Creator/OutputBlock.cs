@@ -69,6 +69,20 @@ namespace Zkwip.EPIC
 
             return text;
         }
+        private static string ReadToOrEnd(ref int cursor, string content, string handle)
+        {
+            var end = content.IndexOf(handle, cursor);
+            if (end == -1)
+                end = content.Length;
+
+            string text = content[cursor..end].Trim();
+            cursor = end + handle.Length;
+
+            if (cursor > content.Length) 
+                cursor = content.Length;
+
+            return text;
+        }
 
         private void FillFromText(string text)
         {
@@ -85,11 +99,9 @@ namespace Zkwip.EPIC
                 if (cursor >= text.Length)
                     throw new ProfileMismatchException($"Array literal {Name} has the wrong number of bytes: End of array is reached at index {i} instead of {_byteCount}");
 
-                string code = text.Substring(cursor, 2);
+                string code = ReadToOrEnd(ref cursor, text,",");
 
                 _data[i] = Convert.ToByte(code, 16);
-
-                cursor += 2;
             }
 
             if (_byteCount <= _explicitSize && text.IndexOf("0x", cursor) != -1)

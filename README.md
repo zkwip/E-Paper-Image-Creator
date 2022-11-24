@@ -64,7 +64,7 @@ The following devices already have profiles:
  - `waveshare/epd2in9` - 2.9 Inch 296x128  B/W
  - `waveshare/epd2in9_v2` - 2.9 Inch 296x128  B/W
  - `waveshare/epd2in9b` - 2.9 Inch 296x128  R/B/W
- - `waveshare/epd2in9b_v3` - 2.9 Inch 296x128  R/B/W
+ - `waveshare/epd2in9b_v3` - 2.9 Inch 296x128  R/B/W *
  - `waveshare/epd2in9c` - 2.9 Inch 296x128  Y/B/W
  - `waveshare/epd2in9d` - 2.9 Inch 296x128  B/W
  
@@ -101,6 +101,9 @@ The following devices already have profiles:
  - `waveshare/epd7in5c` - 7.5 Inch 640x384  Y/B/W
  - `waveshare/epd7in5_hd` - 7.5 Inch 880x528  B/W
  - `waveshare/epd7in5b_hd` - 7.5 Inch 880x528  R/B/W
+
+Profiles marked with a * appeared to have code in the manufacturer's example that does not match the specificat. In this case the profile specifications and/or example files might be different from what's in the manufacturer's example project.
+
 
 ## Custom Profiles
 It's usually fastest to start off with a profile of a device that is very similar. Often screens are sold under multiple names and even more often they share the same type of drivers. Once you have picked a profile, copy it and modify its parameters until it looks right. A good way to do this is to take an example project from the manufacturer's website and see what image you get when you use the `extract` command. If you want to be extra sure, you can also use the following command to run some tests to see if the profile `manufacturer/myepd` makes sense:

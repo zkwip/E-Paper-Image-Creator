@@ -4,21 +4,21 @@ using System.Runtime.Serialization;
 namespace Zkwip.EPIC
 {
     [Serializable]
-    internal class EpicSettingsException : Exception
+    internal class SettingsException : Exception
     {
-        public EpicSettingsException()
+        public SettingsException()
         {
         }
 
-        public EpicSettingsException(string? message) : base(message)
+        public SettingsException(string? message) : base(message)
         {
         }
 
-        public EpicSettingsException(string? message, Exception? innerException) : base(message, innerException)
+        public SettingsException(string? message, Exception? innerException) : base(message, innerException)
         {
         }
 
-        protected EpicSettingsException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected SettingsException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

@@ -118,7 +118,7 @@ namespace Zkwip.EPIC
             //    return 0;
 
             // Match by name
-            for (int c = 0; c < _channels; c++)
+            for (int c = 0; c < _blockNames.Length; c++)
             {
                 if (name == _blockNames[c])
                     return c;

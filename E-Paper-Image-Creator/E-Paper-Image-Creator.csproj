@@ -140,50 +140,50 @@
     <None Update="Examples\waveshare\epd4in37g.cpp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\waveshare\epd5in65f.cpp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Examples\waveshare\epd5in65f.cpp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\waveshare\epd5in83.cpp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Examples\waveshare\epd5in83.cpp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\waveshare\epd5in83b.cpp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Examples\waveshare\epd5in83b.cpp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\waveshare\epd5in83b_v2.cpp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Examples\waveshare\epd5in83b_v2.cpp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\waveshare\epd5in83c.cpp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Examples\waveshare\epd5in83c.cpp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\waveshare\epd5in83_v2.cpp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Examples\waveshare\epd5in83_v2.cpp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\waveshare\epd7in3f.cpp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Examples\waveshare\epd7in3f.cpp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\waveshare\epd7in3g.cpp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Examples\waveshare\epd7in3g.cpp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\waveshare\epd7in5.cpp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Examples\waveshare\epd7in5.cpp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\waveshare\epd7in5b.cpp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Examples\waveshare\epd7in5b.cpp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\waveshare\epd7in5b_hd.cpp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Examples\waveshare\epd7in5b_hd.cpp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\waveshare\epd7in5b_v2.cpp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Examples\waveshare\epd7in5b_v2.cpp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\waveshare\epd7in5c.cpp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Examples\waveshare\epd7in5c.cpp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\waveshare\epd7in5_hd.cpp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Examples\waveshare\epd7in5_hd.cpp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Examples\waveshare\epd7in5_v2.cpp">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Examples\waveshare\epd7in5_v2.cpp">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="img.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -209,11 +209,11 @@
     <None Update="Profiles\seeed\grove_triple_1_54.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Profiles\waveshare\epd5in83.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Profiles\waveshare\epd5in83.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Update="Profiles\waveshare\epd5in65f.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="FutureSupport\Profiles\waveshare\epd5in65f.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="Profiles\waveshare\epd4in37g.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

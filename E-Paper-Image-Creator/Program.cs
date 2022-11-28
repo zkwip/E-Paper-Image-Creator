@@ -22,7 +22,7 @@ public class Program
             command.Invoke();
             return 0;
         }
-        catch (EpicSettingsException ex)
+        catch (SettingsException ex)
         {
             Console.WriteLine(ex.Message);
             return 1;

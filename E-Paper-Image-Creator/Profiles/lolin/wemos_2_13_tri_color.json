@@ -12,7 +12,7 @@
 
   "channels": 2,
   "interleaved": 0,
-  "explicitsize": 1,
+  "explicitsize": 2756,
 
   "blockNames": [
     "gImage_red",

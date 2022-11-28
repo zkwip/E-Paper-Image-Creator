@@ -8,21 +8,23 @@ namespace Zkwip.EPIC
         private readonly byte[] _data;
         private readonly int _byteCount;
         private readonly bool _msbFirst;
-        private readonly bool _explicitSize;
+        private readonly int _explicitSize;
 
-        public OutputBlock(int bits, string name, bool msbFirst, bool explicitByteCount)
+        public OutputBlock(int bits, string name, bool msbFirst, int explicitByteCount)
         {
             Name = name;
-            _byteCount = (bits - 1) / 8 + 1;
+            _byteCount = BitToByteCount(bits);
             _msbFirst = msbFirst;
 
             _data = new byte[_byteCount];
             _explicitSize = explicitByteCount;
         }
 
-        public static OutputBlock FromText(ref int cursor, string content, int bits, bool msbFirst, bool explicitByteCount)
+        private static int BitToByteCount(int bits) => (bits - 1) / 8 + 1;
+
+        public static OutputBlock FromText(ref int cursor, string content, int bits, bool msbFirst, int explicitByteCount)
         {
-            string arrayText = ReadBlock(ref cursor, content, out string name);
+            string arrayText = ReadBlock(ref cursor, content, out string name, explicitByteCount, bits);
             var block = new OutputBlock(bits, name, msbFirst, explicitByteCount);
 
             block.FillFromText(SkipComments(arrayText));
@@ -31,11 +33,28 @@ namespace Zkwip.EPIC
 
         public string Name { get; }
 
-        private static string ReadBlock(ref int cursor, string content, out string name)
+        private static string ReadBlock(ref int cursor, string content, out string name, int explicitByteCount, int bits)
         {
             ReadTo(ref cursor, content, "const unsigned char");
             name = ReadTo(ref cursor, content, "[");
+            var count = ReadTo(ref cursor, content, "]");
             ReadTo(ref cursor, content, "{");
+
+
+            if (explicitByteCount > 0)
+            {
+                if (count.Length == 0)
+                    throw new ProfileMismatchException($"Array literal {name} has no explicit byte count, but the profile does");
+                var bytes = int.Parse(count);
+
+                if (bytes < explicitByteCount)
+                    throw new ProfileMismatchException($"Array literal {name} has the wrong number of bytes: {bytes} instead of the expected {explicitByteCount}");
+
+            }
+
+            if (explicitByteCount == 0 && count.Length > 0)
+                throw new ProfileMismatchException($"Array literal {name} has an explicit byte count \"{count}\" while the profile does not expect it.");
+
             return ReadTo(ref cursor, content, "};");
         }
 
@@ -43,10 +62,24 @@ namespace Zkwip.EPIC
         {
             var end = content.IndexOf(handle, cursor);
             if (end == -1)
-                throw new ProfileMismatchException($"Failed to find the handle \"{handle}\" in array literal");
+                throw new FileReaderException($"Failed to find the handle \"{handle}\" in array literal");
 
             string text = content[cursor..end].Trim();
             cursor = end + handle.Length;
+
+            return text;
+        }
+        private static string ReadToOrEnd(ref int cursor, string content, string handle)
+        {
+            var end = content.IndexOf(handle, cursor);
+            if (end == -1)
+                end = content.Length;
+
+            string text = content[cursor..end].Trim();
+            cursor = end + handle.Length;
+
+            if (cursor > content.Length) 
+                cursor = content.Length;
 
             return text;
         }
@@ -59,22 +92,20 @@ namespace Zkwip.EPIC
                 cursor = text.IndexOf("0x", cursor);
 
                 if (cursor == -1)
-                    throw new Exception($"Array literal {Name} has the wrong number of bytes: {i} instead of the expected {_byteCount}");
+                    throw new ProfileMismatchException($"Array literal {Name} has the wrong number of bytes: {i} instead of the expected {_byteCount}");
 
                 cursor += 2;
 
                 if (cursor >= text.Length)
-                    throw new Exception($"Array literal {Name} has the wrong number of bytes: End of array is reached at index {i} instead of {_byteCount}");
+                    throw new ProfileMismatchException($"Array literal {Name} has the wrong number of bytes: End of array is reached at index {i} instead of {_byteCount}");
 
-                string code = text.Substring(cursor, 2);
+                string code = ReadToOrEnd(ref cursor, text,",");
 
                 _data[i] = Convert.ToByte(code, 16);
-
-                cursor += 2;
             }
 
-            if (text.IndexOf("0x", cursor) != -1)
-                throw new Exception($"Array literal {Name} has the wrong number of bytes: End of array has not been reached at index {_byteCount}");
+            if (_byteCount <= _explicitSize && text.IndexOf("0x", cursor) != -1)
+                throw new ProfileMismatchException($"Array literal {Name} has the wrong number of bytes: End of array has not been reached at index {_byteCount}");
         }
 
         internal string GenerateLiteral(bool disableProgmem, int perLine = 16)
@@ -86,7 +117,7 @@ namespace Zkwip.EPIC
 
         internal void BuildLiteralString(bool disableProgmem, StringBuilder builder, int perLine = 16)
         { 
-            string bcs = _explicitSize ? _byteCount.ToString() : "";
+            string bcs = (_explicitSize > 0) ? _byteCount.ToString() : "";
             builder.AppendLine($"\nconst unsigned char {Name}[{bcs}] {(disableProgmem ? "" : "PROGMEM ")}= {{");
 
             for (int i = 0; i < _byteCount; i++)

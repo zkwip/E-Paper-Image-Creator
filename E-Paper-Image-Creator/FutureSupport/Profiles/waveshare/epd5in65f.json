@@ -1,0 +1,64 @@
+{
+  "width": 192,
+  "height": 143,
+
+  "msbfirst": 1,
+  "groupx": 1,
+  "groupy": 1,
+
+  "fliphorizontal": 0,
+  "flipvertical": 0,
+  "rotate": 0,
+
+  "channels": 4,
+  "interleaved": 1,
+  "explicitsize": 13728,
+
+  "blockNames": [
+    "gImage_5in65f"
+  ],
+  "palette": [
+    {
+      "r": 0,
+      "g": 0,
+      "b": 0,
+      "bits": [ 0, 0, 0, 0 ]
+    },
+    {
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "bits": [ 0, 0, 0, 1 ]
+    },
+    {
+      "r": 0,
+      "g": 255,
+      "b": 0,
+      "bits": [ 0, 0, 1, 0 ]
+    },
+    {
+      "r": 0,
+      "g": 0,
+      "b": 255,
+      "bits": [ 0, 0, 1, 1 ]
+    },
+    {
+      "r": 255,
+      "g": 0,
+      "b": 0,
+      "bits": [ 0, 1, 0, 0 ]
+    },
+    {
+      "r": 255,
+      "g": 255,
+      "b": 0,
+      "bits": [ 0, 1, 0, 1 ]
+    },
+    {
+      "r": 255,
+      "g": 128,
+      "b": 0,
+      "bits": [ 0, 1, 1, 0 ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "width": 104,
+  "height": 212,
+
+  "msbfirst": 1,
+  "groupx": 1,
+  "groupy": 1,
+
+  "fliphorizontal": 0,
+  "flipvertical": 0,
+  "rotate": -1,
+
+  "channels": 2,
+  "interleaved": 0,
+  "explicitsize": 0,
+
+  "blockNames": [
+    "IMAGE_RED",
+    "IMAGE_BLACK"
+  ],
+  "palette": [
+    {
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "bits": [ 1, 1 ]
+    },
+    {
+      "r": 255,
+      "g": 255,
+      "b": 0,
+      "bits": [ 0, 1 ]
+    },
+    {
+      "r": 0,
+      "g": 0,
+      "b": 0,
+      "bits": [ 1, 0 ]
+    },
+    {
+      "r": 255,
+      "g": 1,
+      "b": 0,
+      "bits": [ 0, 0 ]
+    }
+  ]
+}

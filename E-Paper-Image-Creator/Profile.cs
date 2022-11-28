@@ -31,7 +31,7 @@ public struct Profile
 
     public int Channels;
     [JsonRequired]
-    public bool ExplicitSize;
+    public int ExplicitSize;
     [JsonRequired]
     public bool MsbFirst;
     [JsonRequired]
@@ -89,6 +89,8 @@ public struct Profile
         return new Point(x, y);
     }
 
+    internal int ImageHeight => ((Rotate & 1) == 1) ? Width: Height;
+    internal int ImageWidth => ((Rotate & 1) == 1) ? Height : Width;
     private int XGroups => 1 + (Width - 1) / GroupX;
     private int YGroups => 1 + (Height - 1) / GroupY;
 
@@ -107,15 +109,12 @@ public struct Profile
 
     private bool InsideBounds(Point pixel)
     {
-        if (Rotate % 2 == 0)
-            return pixel.X >= 0 && pixel.Y >= 0 && pixel.X < Width && pixel.Y < Height;
-
-        return pixel.X >= 0 && pixel.Y >= 0 && pixel.X < Height && pixel.Y < Width;
+            return pixel.X >= 0 && pixel.Y >= 0 && pixel.X < ImageWidth && pixel.Y < ImageHeight;
     }
 
     internal Image<Rgb24> WriteToImage(IEnumerable<bool[]> data)
     {
-        var bitmap = CreateEmptyBitmap();
+        var bitmap = new Image<Rgb24>(ImageWidth, ImageHeight);
 
         var bitEnumerator = data.GetEnumerator();
 
@@ -129,15 +128,6 @@ public struct Profile
         }
 
         return bitmap;
-    }
-
-    private Image<Rgb24> CreateEmptyBitmap()
-    {
-        NormalizeRotation();
-        if (Rotate % 2 == 0)
-            return new Image<Rgb24>(Width, Height);
-        
-        return new Image<Rgb24>(Height, Width);
     }
 
     private void NormalizeRotation()
@@ -211,6 +201,12 @@ public struct Profile
 
         if (Palette.Length <= 0)
             throw new ProfileValidationException("The palette cannot be empty");
+
+        if (ExplicitSize < 0)
+            throw new ProfileValidationException("The explicit size parameter must be greater or equal to zero");
+
+        if (ExplicitSize > 0 && ExplicitSize < (Entries * (Interleaved ? Channels:1)/ 8))
+            throw new ProfileValidationException("The explicit size parameter must be greater or equal to the number of bytes needed to store the pixels");
 
         if (Interleaved && BlockNames.Length != 1)
             throw new ProfileValidationException("Interleaved profiles can only have one block name");

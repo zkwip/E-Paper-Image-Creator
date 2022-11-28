@@ -42,7 +42,7 @@ namespace Zkwip.EPIC
         private static string GetFileContents(string file, string desc)
         {
             if (!File.Exists(file))
-                throw new EpicSettingsException($"The provided {desc} does not exist");
+                throw new SettingsException($"The provided {desc} does not exist");
 
             var content = File.ReadAllText(file);
             return content;
@@ -51,7 +51,7 @@ namespace Zkwip.EPIC
         private static void WriteImageToFile(string filename, Image bitmap, bool force)
         {
             if (File.Exists(filename) && !force)
-                throw new EpicSettingsException($"The output file \"{filename}\" already exist");
+                throw new SettingsException($"The output file \"{filename}\" already exist");
 
             new FileInfo(filename).Directory!.Create();
             bitmap.Save(filename);
@@ -60,7 +60,7 @@ namespace Zkwip.EPIC
         private static void WriteOutputToFile(string outfile, string contents, bool force)
         {
             if (File.Exists(outfile) && !force)
-                throw new EpicSettingsException($"The output file \"{outfile}\" already exist");
+                throw new SettingsException($"The output file \"{outfile}\" already exist");
 
             File.WriteAllText(outfile, contents);
         }
@@ -68,15 +68,15 @@ namespace Zkwip.EPIC
         private static Image<Rgb24> ReadImageFile(string file, Profile profile)
         {
             if (!File.Exists(file))
-                throw new EpicSettingsException("The provided file does not exist");
+                throw new SettingsException("The provided file does not exist");
 
             var img = Image.Load<Rgb24>(file);
 
             if (img.Size().IsEmpty)
-                throw new EpicSettingsException("The provided file is not an image file");
+                throw new SettingsException("The provided file is not an image file");
 
             if (img.Width < profile.Width || img.Height < profile.Height)
-                throw new EpicSettingsException("The image is smaller than the target");
+                throw new SettingsException("The image is smaller than the target");
 
             return img;
         }

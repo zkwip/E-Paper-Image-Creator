@@ -67,7 +67,7 @@ namespace Zkwip.EPIC
                 for(int i=0;i<_blocks.Length;i++)
                 {
                     if (_blocks[i] is null)
-                        throw new ProfileMismatchException($"Literal {_blockNames[i]}was not found in teh code file.");
+                        throw new ProfileMismatchException($"Literal {_blockNames[i]}was not found in the code file.");
 
                 }
             }

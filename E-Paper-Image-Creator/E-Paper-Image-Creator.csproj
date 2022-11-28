@@ -209,13 +209,13 @@
     <None Update="Profiles\adafruit\thinkink_213_mono_m21.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Profiles\adafruit\thinkink_152_mono_d67.json">
+    <None Update="Profiles\adafruit\thinkink_154_mono_d67.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Profiles\adafruit\thinkink_152_mono_d27.json">
+    <None Update="Profiles\adafruit\thinkink_154_mono_d27.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Profiles\adafruit\thinkink_152_mono_m10.json">
+    <None Update="Profiles\adafruit\thinkink_154_mono_m10.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Profiles\adafruit\thinkink_154_tri_z17.json">

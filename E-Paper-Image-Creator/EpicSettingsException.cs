@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace Zkwip.EPIC
 {
-    [Serializable]
-    internal class SettingsException : Exception
+    internal class SettingsException(string? message) : Exception(message)
     {
-        public SettingsException()
-        {
-        }
-
-        public SettingsException(string? message) : base(message)
-        {
-        }
     }
 }

@@ -72,7 +72,7 @@ namespace Zkwip.EPIC
 
             var img = Image.Load<Rgb24>(file);
 
-            if (img.Size().IsEmpty)
+            if (img.Size.IsEmpty)
                 throw new SettingsException("The provided file is not an image file");
 
             if (img.Width < profile.Width || img.Height < profile.Height)
